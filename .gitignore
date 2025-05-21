@@ -1,0 +1,5 @@
+# .cursorignore
+node_modules/
+.git/
+/.env
+# .env  // Bu satırı yorum satırına aldık, böylece .env dosyası görünür olacak
