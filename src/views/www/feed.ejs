@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tartışmalar | TuMeal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: #f6f8fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        .brand {
+            font-weight: 700;
+            font-size: 2rem;
+            color: #2c3e50;
+            letter-spacing: -1px;
+        }
+        .brand .logo {
+            color: #ff6b35;
+            margin-right: 8px;
+        }
+        .sidebar-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .profile-mini {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .profile-mini .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 0.5rem;
+            border: 3px solid #ff6b35;
+        }
+        .profile-mini .name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        .profile-mini .email {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        .quick-links a {
+            display: block;
+            color: #2c3e50;
+            font-weight: 500;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+        .quick-links a:hover {
+            color: #ff6b35;
+        }
+        .feed-main {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .create-post-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+            padding: 1.5rem 1.5rem 1rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .create-post-card textarea {
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            padding: 1rem;
+            font-size: 1.1rem;
+            min-height: 60px;
+            resize: vertical;
+            margin-bottom: 0.5rem;
+        }
+        .create-post-card .btn-orange {
+            background: #ff6b35;
+            color: #fff;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 8px 24px;
+            border: none;
+            transition: background 0.2s;
+        }
+        .create-post-card .btn-orange:hover {
+            background: #e55d2a;
+            color: #fff;
+        }
+        .post-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+            padding: 1.2rem 1.5rem 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.3rem;
+        }
+        .post-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem;
+        }
+        .post-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-right: 0.5rem;
+        }
+        .post-time {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+        .post-content {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 0.7rem;
+            margin-top: 0.2rem;
+        }
+        .post-actions {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        .post-action {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .post-action:hover {
+            color: #ff6b35;
+        }
+        .post-action i {
+            margin-right: 4px;
+        }
+        .comments-thread { margin-left: 3.2rem; margin-top: 0.5rem; border-left: 2px solid #f0f0f0; padding-left: 1.2rem; }
+        .comment-reply { display: flex; align-items: flex-start; margin-bottom: 1rem; }
+        .comment-reply .comment-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; margin-right: 0.7rem; }
+        .comment-reply .comment-body { background: #f6f8fa; border-radius: 10px; padding: 0.7rem 1rem; }
+        .comment-reply .comment-name { font-weight: 600; color: #2c3e50; font-size: 1rem; margin-right: 0.5rem; }
+        .comment-reply .comment-time { color: #7f8c8d; font-size: 0.95rem; }
+        .topics-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+            padding: 1.5rem 1.5rem 1rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .topic-title {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        .topic-meta {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        .footer {
+            background: #2c3e50;
+            color: #fff;
+            padding: 2rem 0 1rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        .footer a {
+            color: #ff6b35;
+            margin: 0 8px;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: #fff;
+        }
+        /* Reply Modal Styles */
+        .reply-modal .modal-content {
+            border-radius: 18px;
+            border: none;
+        }
+        .reply-modal .modal-header {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 1rem 1.5rem;
+        }
+        .reply-modal .modal-body {
+            padding: 1.5rem;
+        }
+        .reply-modal .modal-footer {
+            border-top: 1px solid #f0f0f0;
+            padding: 1rem 1.5rem;
+        }
+        .reply-modal textarea {
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            padding: 1rem;
+            font-size: 1.1rem;
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* Inline Reply Styles */
+        .inline-reply {
+            display: none;
+            margin-top: 1rem;
+            margin-left: 3.2rem;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+        .inline-reply.active {
+            display: block;
+        }
+        .inline-reply textarea {
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            padding: 0.8rem;
+            font-size: 1rem;
+            min-height: 60px;
+            resize: vertical;
+            margin-bottom: 0.5rem;
+            transition: border-color 0.2s;
+        }
+        .inline-reply textarea:focus {
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.1);
+        }
+        .inline-reply .btn-orange {
+            background: #ff6b35;
+            color: #fff;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 6px 20px;
+            border: none;
+            transition: all 0.2s;
+        }
+        .inline-reply .btn-orange:hover {
+            background: #e55d2a;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/www/common/navbar') %>
+    <div class="container mt-4 mb-4">
+        <div class="row justify-content-center">
+            <!-- Left Sidebar -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="sidebar-card">
+                    <div class="profile-mini">
+                        <img src="https://ui-avatars.com/api/?name=Ahmet+Yilmaz&background=ececec&color=2c3e50" class="avatar" alt="Ahmet Yılmaz">
+                        <div class="name">Ahmet Yılmaz</div>
+                        <div class="email">ahmet.yilmaz@universite.edu.tr</div>
+                    </div>
+                    <div class="quick-links">
+                        <a href="index.html"><i class="fa-solid fa-home me-2"></i>Ana Sayfa</a>
+                        <a href="menu.html"><i class="fa-solid fa-calendar-days me-2"></i>Haftalık Menü</a>
+                        <a href="profile.html"><i class="fa-solid fa-user me-2"></i>Profilim</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Feed Main -->
+            <div class="col-lg-6 feed-main">
+                <div class="create-post-card mb-4">
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="https://ui-avatars.com/api/?name=Ahmet+Yilmaz&background=ececec&color=2c3e50" class="post-avatar me-2" alt="Ahmet Yılmaz">
+                        <textarea class="form-control" placeholder="Neler düşünüyorsun? #bugunyemek" maxlength="180"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <div class="rating">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                        <button class="btn btn-orange"><i class="fa-solid fa-paper-plane me-2"></i>Paylaş</button>
+                    </div>
+                </div>
+                <!-- Post 1 -->
+                <div class="post-card">
+                    <div class="post-header">
+                        <img src="https://ui-avatars.com/api/?name=Ahmet+Yilmaz&background=ececec&color=2c3e50" class="post-avatar" alt="Ahmet Yılmaz">
+                        <span class="post-name">Ahmet Yılmaz</span>
+                        <span class="post-time">2 saat önce</span>
+                    </div>
+                    <div class="post-content">Bugünkü düğün çorbası gerçekten çok lezzetliydi! 👌</div>
+                    <div class="post-actions">
+                        <span class="post-action"><i class="fa-regular fa-heart"></i> 24</span>
+                        <span class="post-action reply-btn"><i class="fa-regular fa-comment"></i> 5</span>
+                        <span class="post-action"><i class="fa-solid fa-share"></i> Paylaş</span>
+                    </div>
+                    <!-- Inline Reply -->
+                    <div class="inline-reply">
+                        <textarea class="form-control" placeholder="Yanıtınızı yazın..."></textarea>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Maksimum 180 karakter</small>
+                            <button class="btn btn-orange"><i class="fa-solid fa-paper-plane me-2"></i>Yanıtla</button>
+                        </div>
+                    </div>
+                    <!-- Comments Thread -->
+                    <div class="comments-thread">
+                        <div class="comment-reply">
+                            <img src="https://ui-avatars.com/api/?name=Zeynep+Kaya&background=ececec&color=2c3e50" class="comment-avatar" alt="Zeynep Kaya">
+                            <div class="comment-body">
+                                <span class="comment-name">Zeynep Kaya</span>
+                                <span class="comment-time">1 saat önce</span>
+                                <div>Ben de çok beğendim, özellikle sıcak servis edilmesi harikaydı!</div>
+                            </div>
+                        </div>
+                        <div class="comment-reply">
+                            <img src="https://ui-avatars.com/api/?name=Mehmet+Demir&background=ececec&color=2c3e50" class="comment-avatar" alt="Mehmet Demir">
+                            <div class="comment-body">
+                                <span class="comment-name">Mehmet Demir</span>
+                                <span class="comment-time">30 dk önce</span>
+                                <div>Bence de, nohutlar tam kıvamında pişmişti.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Post 2 -->
+                <div class="post-card">
+                    <div class="post-header">
+                        <img src="https://ui-avatars.com/api/?name=Ayse+Demir&background=ececec&color=2c3e50" class="post-avatar" alt="Ayşe Demir">
+                        <span class="post-name">Ayşe Demir</span>
+                        <span class="post-time">3 saat önce</span>
+                    </div>
+                    <div class="post-content">Eti nohut biraz kuru olmuş, ama pilav harikaydı! 🌟</div>
+                    <div class="post-actions">
+                        <span class="post-action"><i class="fa-regular fa-heart"></i> 12</span>
+                        <span class="post-action"><i class="fa-regular fa-comment"></i> 3</span>
+                        <span class="post-action"><i class="fa-solid fa-share"></i> Paylaş</span>
+                    </div>
+                    <!-- Comments Thread -->
+                    <div class="comments-thread">
+                        <div class="comment-reply">
+                            <img src="https://ui-avatars.com/api/?name=Fatma+Kurt&background=ececec&color=2c3e50" class="comment-avatar" alt="Fatma Kurt">
+                            <div class="comment-body">
+                                <span class="comment-name">Fatma Kurt</span>
+                                <span class="comment-time">2 saat önce</span>
+                                <div>Pilav gerçekten çok iyiydi, katılıyorum!</div>
+                            </div>
+                        </div>
+                        <div class="comment-reply">
+                            <img src="https://ui-avatars.com/api/?name=Ali+Can&background=ececec&color=2c3e50" class="comment-avatar" alt="Ali Can">
+                            <div class="comment-body">
+                                <span class="comment-name">Ali Can</span>
+                                <span class="comment-time">1 saat önce</span>
+                                <div>Nohutun biraz daha yumuşak olması güzel olurdu.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Sidebar -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="topics-card">
+                    <h5 class="fw-bold mb-3" style="color:#2c3e50;">Popüler Konular</h5>
+                    <a href="today-meal.html" class="text-decoration-none">
+                        <div class="topic-title">Bugünkü Menü Değerlendirmesi</div>
+                        <div class="topic-meta"><i class="fa-solid fa-comments me-1"></i> 24 yorum &nbsp; <i class="fa-solid fa-eye me-1"></i> 156 görüntülenme</div>
+                    </a>
+                    <a href="cafeteria-hours.html" class="text-decoration-none">
+                        <div class="topic-title">Yemekhane Çalışma Saatleri</div>
+                        <div class="topic-meta"><i class="fa-solid fa-comments me-1"></i> 18 yorum &nbsp; <i class="fa-solid fa-eye me-1"></i> 89 görüntülenme</div>
+                    </a>
+                    <a href="menu-suggestions.html" class="text-decoration-none">
+                        <div class="topic-title">Menü Önerileri</div>
+                        <div class="topic-meta"><i class="fa-solid fa-comments me-1"></i> 32 yorum &nbsp; <i class="fa-solid fa-eye me-1"></i> 203 görüntülenme</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+   <%- include('../partials/www/common/footer') %>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Enhanced inline reply functionality
+        document.querySelectorAll('.reply-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const post = this.closest('.post-card');
+                const inlineReply = post.querySelector('.inline-reply');
+                const textarea = inlineReply.querySelector('textarea');
+                
+                // Toggle reply form
+                inlineReply.classList.toggle('active');
+                
+                // Focus textarea when shown
+                if (inlineReply.classList.contains('active')) {
+                    setTimeout(() => textarea.focus(), 100);
+                }
+            });
+        });
+
+        // Character counter for reply textarea
+        document.querySelectorAll('.inline-reply textarea').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                const maxLength = 180;
+                const currentLength = this.value.length;
+                const counter = this.closest('.inline-reply').querySelector('small');
+                
+                if (counter) {
+                    counter.textContent = `${currentLength}/${maxLength} karakter`;
+                    
+                    // Change color when approaching limit
+                    if (currentLength > maxLength * 0.8) {
+                        counter.style.color = '#ff6b35';
+                    } else {
+                        counter.style.color = '#6c757d';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

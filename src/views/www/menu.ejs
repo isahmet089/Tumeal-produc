@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haftalık Menü | TuMeal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        .brand {
+            font-weight: 700;
+            font-size: 2rem;
+            color: #2c3e50;
+            letter-spacing: -1px;
+        }
+        .brand .logo {
+            color: #ff6b35;
+            margin-right: 8px;
+        }
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem auto;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .menu-day-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s;
+        }
+        .menu-day-card:hover {
+            transform: translateY(-5px);
+        }
+        .menu-day-card h3 {
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-day-card .date {
+            color: #ff6b35;
+            font-weight: 600;
+            font-size: 1rem;
+            background: #fff5f2;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: background 0.3s;
+        }
+        .menu-item:hover {
+            background: #f8f9fa;
+        }
+        .menu-item h5 {
+            margin: 0;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .menu-item .cal {
+            color: #ff6b35;
+            font-weight: 600;
+            background: #fff5f2;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+        }
+        .rating {
+            color: #f1c40f;
+            font-size: 1.1rem;
+        }
+        .total-cal {
+            text-align: right;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .quick-links {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .quick-link-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #2c3e50;
+        }
+        .quick-link-item:hover {
+            background: #f8f9fa;
+            color: #ff6b35;
+            transform: translateX(5px);
+        }
+        .quick-link-item i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #ff6b35;
+        }
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .stats-card i {
+            font-size: 2rem;
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+        .stats-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+       
+    </style>
+</head>
+<body>
+    <%- include('../partials/www/common/navbar') %>
+    <div class="container">
+        <div class="hero">
+            <h1>Haftalık Menü</h1>
+            <p>Bu haftanın tüm yemeklerini incele, puanla ve yorum yap</p>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-utensils"></i>
+                    <h3>25</h3>
+                    <p class="text-muted">Toplam Yemek</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-fire"></i>
+                    <h3>1,234</h3>
+                    <p class="text-muted">Toplam Kalori</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-star"></i>
+                    <h3>4.5</h3>
+                    <p class="text-muted">Ortalama Puan</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-comments"></i>
+                    <h3>89</h3>
+                    <p class="text-muted">Toplam Yorum</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Pazartesi -->
+                <div class="menu-day-card">
+                    <h3>Pazartesi <span class="date">05.05.2025</span></h3>
+                    <div class="menu-item">
+                        <h5>Düğün Çorbası</h5>
+                        <span class="cal">207 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Etli Nohut</h5>
+                        <span class="cal">380 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Pirinç Pilavı</h5>
+                        <span class="cal">328 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Yoğurt</h5>
+                        <span class="cal">114 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="total-cal">Toplam: 1029 KKAL</div>
+                </div>
+                <!-- Salı -->
+                <div class="menu-day-card">
+                    <h3>Salı <span class="date">06.05.2025</span></h3>
+                    <div class="menu-item">
+                        <h5>Süzme Mercimek Çorbası</h5>
+                        <span class="cal">237 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Tavuklu Sultan Kebabı</h5>
+                        <span class="cal">540 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>ZYT. Kabak Çentme</h5>
+                        <span class="cal">122 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Şekerpare</h5>
+                        <span class="cal">406 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="total-cal">Toplam: 1305 KKAL</div>
+                </div>
+                <!-- Çarşamba -->
+                <div class="menu-day-card">
+                    <h3>Çarşamba <span class="date">07.05.2025</span></h3>
+                    <div class="menu-item">
+                        <h5>Domates Çorbası</h5>
+                        <span class="cal">159 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Kıymalı Bezelye</h5>
+                        <span class="cal">350 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Soslu Makarna</h5>
+                        <span class="cal">386 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Meyve</h5>
+                        <span class="cal">60 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="total-cal">Toplam: 955 KKAL</div>
+                </div>
+                <!-- Perşembe -->
+                <div class="menu-day-card">
+                    <h3>Perşembe <span class="date">08.05.2025</span></h3>
+                    <div class="menu-item">
+                        <h5>Mercimek Çorbası</h5>
+                        <span class="cal">191 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Tekirdağ Köfte Piyaz</h5>
+                        <span class="cal">607 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Bulgur Pilavı</h5>
+                        <span class="cal">309 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Ayran</h5>
+                        <span class="cal">76 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="total-cal">Toplam: 1183 KKAL</div>
+                </div>
+                <!-- Cuma -->
+                <div class="menu-day-card">
+                    <h3>Cuma <span class="date">09.05.2025</span></h3>
+                    <div class="menu-item">
+                        <h5>Köylü Çorbası</h5>
+                        <span class="cal">152 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Patates Oturtma</h5>
+                        <span class="cal">438 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Şehriyeli Pirinç Pilavı</h5>
+                        <span class="cal">362 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="menu-item">
+                        <h5>Mevsim Salata</h5>
+                        <span class="cal">97 KKAL</span>
+                        <span class="rating ms-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                        </span>
+                    </div>
+                    <div class="total-cal">Toplam: 1049 KKAL</div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <!-- Quick Links -->
+                <div class="quick-links mb-4">
+                    <h3 class="mb-4"><i class="fas fa-bolt me-2"></i>Hızlı Erişim</h3>
+                    <a href="index.html" class="quick-link-item">
+                        <i class="fas fa-home"></i>
+                        <div>
+                            <h5 class="mb-1">Ana Sayfa</h5>
+                            <small class="text-muted">Günlük menüyü görüntüle</small>
+                        </div>
+                    </a>
+                    <a href="feed.html" class="quick-link-item">
+                        <i class="fas fa-comments"></i>
+                        <div>
+                            <h5 class="mb-1">Yemek Tartış</h5>
+                            <small class="text-muted">Diğer öğrencilerle yorum yap</small>
+                        </div>
+                    </a>
+                    <a href="profile.html" class="quick-link-item">
+                        <i class="fas fa-user"></i>
+                        <div>
+                            <h5 class="mb-1">Profilim</h5>
+                            <small class="text-muted">Hesap ayarlarını yönet</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Weekly Poll -->
+                <div class="quick-links">
+                    <h3 class="mb-4"><i class="fas fa-poll me-2"></i>Haftalık Anket</h3>
+                    <p class="mb-3">Bu haftanın en beğendiğiniz yemeği hangisi?</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary">Tavuklu Sultan Kebabı</button>
+                        <button class="btn btn-outline-primary">Tekirdağ Köfte</button>
+                        <button class="btn btn-outline-primary">Patates Oturtma</button>
+                        <button class="btn btn-outline-primary">Kıymalı Bezelye</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/www/common/footer') %>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

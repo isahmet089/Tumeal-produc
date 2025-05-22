@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap | TuMeal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: #f6f8fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        .brand {
+            font-weight: 700;
+            font-size: 2rem;
+            color: #2c3e50;
+            letter-spacing: -1px;
+        }
+        .brand .logo {
+            color: #ff6b35;
+            margin-right: 8px;
+        }
+        .login-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+            padding: 2.5rem 2rem 2rem 2rem;
+            max-width: 400px;
+            margin: 3rem auto;
+        }
+        .login-card h2 {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .login-card p {
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            font-size: 1rem;
+        }
+        .form-control:focus {
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 2px #ff6b3533;
+        }
+        .btn-orange {
+            background: #ff6b35;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 12px 0;
+            margin-top: 1rem;
+            transition: background 0.2s;
+            color: #fff;
+        }
+        .btn-orange:hover {
+            background: #e55d2a;
+            color: #fff;
+        }
+        .login-card .form-check-label {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+        .login-card .forgot-link {
+            color: #ff6b35;
+            font-size: 0.95rem;
+            float: right;
+            text-decoration: none;
+        }
+        .login-card .forgot-link:hover {
+            text-decoration: underline;
+        }
+        .login-card .register-link {
+            color: #ff6b35;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .login-card .register-link:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            background: #2c3e50;
+            color: #fff;
+            padding: 2rem 0 1rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        .footer a {
+            color: #ff6b35;
+            margin: 0 8px;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <%- include('../partials/www/common/navbar') %>
+
+    <!-- Main Content -->
+    <div class="container mt-5 pt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card login-card animate__animated animate__fadeIn">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-user-circle fa-3x text-primary mb-3"></i>
+                            <h4>Giriş Yap</h4>
+                            <p class="text-muted">Hesabınıza giriş yaparak yorum yapabilir ve puanlama yapabilirsiniz.</p>
+                        </div>
+                        <form>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">E-posta Adresi</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fa-regular fa-envelope"></i>
+                                    </span>
+                                    <input type="email" class="form-control" id="email" placeholder="ornek@universite.edu.tr" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Şifre</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fa-solid fa-lock"></i>
+                                    </span>
+                                    <input type="password" class="form-control" id="password" placeholder="••••••••" required>
+                                    <span class="input-group-text">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mb-3 d-flex justify-content-between align-items-center">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="remember">
+                                    <label class="form-check-label" for="remember">Beni hatırla</label>
+                                </div>
+                                <a href="#" class="forgot-link">Şifremi unuttum</a>
+                            </div>
+                            <button type="submit" class="btn btn-orange w-100">
+                                <i class="fa-solid fa-sign-in-alt me-2"></i>Giriş Yap
+                            </button>
+                            <div class="text-center mt-3">
+                                <span>Hesabınız yok mu? <a href="/register" class="register-link">Kayıt Ol</a></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+  <%- include('../partials/www/common/footer') %>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
