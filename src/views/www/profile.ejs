@@ -141,21 +141,86 @@
     .footer a:hover {
       color: #fff;
     }
+    .account-status {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.account-status .badge {
+    font-size: 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+.profile-btns .btn {
+    min-width: 160px;
+    font-weight: 500;
+}
+@media (max-width: 576px) {
+    .profile-btns {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    .profile-btns .btn {
+        width: 100%;
+    }
+}
   </style>
 </head>
 <body>
   <%- include('../partials/www/common/navbar') %>
-  <div class="container mt-3 mb-4">
-    <div class="profile-card">
-      <img src="https://ui-avatars.com/api/?name=Ahmet+Yilmaz&background=ececec&color=2c3e50" class="profile-avatar" alt="Ahmet Yılmaz">
-      <div class="profile-name">Ahmet Yılmaz</div>
-      <div class="profile-email">ahmet.yilmaz@universite.edu.tr</div>
-      <div class="profile-id">Öğrenci No: 20231234</div>
-      <div class="profile-btns mb-2">
-        <a href="#" class="btn btn-orange"><i class="fa-solid fa-history me-2"></i>Yorum Geçmişim</a>
-        <a href="#" class="btn btn-outline-orange"><i class="fa-solid fa-user-edit me-2"></i>Profili Düzenle</a>
+  <div class="profile-card">
+    <% if (error) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%= error %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
+  <% } %>
+  
+  <% if (success) { %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= success %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+  <% } %>
+    <img src="https://ui-avatars.com/api/?name=<%= user.firstName %>+<%= user.lastName %>&background=ececec&color=2c3e50"
+         class="profile-avatar"
+         alt="<%= user.firstName %> <%= user.lastName %>">
+    <div class="profile-name"><%= user.firstName %> <%= user.lastName %></div>
+    <div class="profile-email"><%= user.email %></div>
+    <div class="profile-id">Öğrenci No: <%= user.studentId %></div>
+
+    <!-- Hesap Durumu Rozeti -->
+    <div class="account-status mb-3">
+        <% if (user.isVerified) { %>
+            <span class="badge bg-success px-3 py-2">
+                <i class="fas fa-check-circle me-1"></i> Onaylı Hesap
+            </span>
+        <% } else { %>
+            <span class="badge bg-warning text-dark px-3 py-2">
+                <i class="fas fa-exclamation-circle me-1"></i> Onaylanmamış Hesap
+            </span>
+        <% } %>
     </div>
+
+    <div class="profile-btns mb-2 d-flex flex-wrap justify-content-center gap-2">
+        <a href="/profile/comments" class="btn btn-orange">
+            <i class="fa-solid fa-history me-2"></i>Yorum Geçmişim
+        </a>
+        <a href="/profile/edit" class="btn btn-outline-orange">
+            <i class="fa-solid fa-user-edit me-2"></i>Profili Düzenle
+        </a>
+        <a href="/profile/change-password" class="btn btn-outline-orange">
+            <i class="fa-solid fa-key me-2"></i>Şifre Değiştir
+        </a>
+        <% if (!user.isVerified) { %>
+          <form action="/resend-verification" method="POST">
+            <input type="hidden" name="userId" value="<%= user._id %>">
+            <button type="submit" class="btn btn-warning">
+                <i class="fa-solid fa-envelope me-2"></i>Onay Maili Gönder
+            </button>
+        </form>
+        <% } %>
+    </div>
+</div>
     <h4 class="mb-3 mt-4 fw-bold text-center" style="color:#2c3e50;">Yorumlarım</h4>
     <div class="row justify-content-center">
       <div class="col-lg-7">

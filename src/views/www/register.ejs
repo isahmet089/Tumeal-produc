@@ -115,7 +115,21 @@
                             <h4>Kayıt Ol</h4>
                             <p class="text-muted">Üniversite yemekhane hesabı oluşturun ve menülere yorum yapın, puan verin.</p>
                         </div>
-                        <form>
+                        <!-- Alert mesajları buraya eklendi -->
+<% if (error) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
+
+<% if (success) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
+                        <form action="/register" method="POST">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="firstName" class="form-label">Ad</label>
@@ -123,7 +137,7 @@
                                         <span class="input-group-text">
                                             <i class="fas fa-user"></i>
                                         </span>
-                                        <input type="text" class="form-control" id="firstName" placeholder="Adınız" required>
+                                        <input type="text" name="firstName" class="form-control" id="firstName" placeholder="Adınız" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
@@ -132,7 +146,7 @@
                                         <span class="input-group-text">
                                             <i class="fas fa-user"></i>
                                         </span>
-                                        <input type="text" class="form-control" id="lastName" placeholder="Soyadınız" required>
+                                        <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Soyadınız" required>
                                     </div>
                                 </div>
                             </div>
@@ -142,7 +156,7 @@
                                     <span class="input-group-text">
                                         <i class="fas fa-id-card"></i>
                                     </span>
-                                    <input type="text" class="form-control" id="studentId" placeholder="Öğrenci Numaranız" required>
+                                    <input type="text" name="studentId" class="form-control" id="studentId" placeholder="Öğrenci Numaranız" required>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -151,7 +165,7 @@
                                     <span class="input-group-text">
                                         <i class="fas fa-envelope"></i>
                                     </span>
-                                    <input type="email" class="form-control" id="email" placeholder="ornek@universite.edu.tr" required>
+                                    <input type="email" name="email" class="form-control" id="email" placeholder="ornek@universite.edu.tr" required>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -160,7 +174,7 @@
                                     <span class="input-group-text">
                                         <i class="fas fa-lock"></i>
                                     </span>
-                                    <input type="password" class="form-control" id="password" placeholder="••••••••" required>
+                                    <input type="password" name="password" class="form-control" id="password" placeholder="••••••••" required>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -169,11 +183,11 @@
                                     <span class="input-group-text">
                                         <i class="fas fa-lock"></i>
                                     </span>
-                                    <input type="password" class="form-control" id="confirmPassword" placeholder="••••••••" required>
+                                    <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="••••••••" required>
                                 </div>
                             </div>
                             <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="terms" required>
+                                <input type="checkbox" name="termsAccepted" class="form-check-input" id="terms" required>
                                 <label class="form-check-label" for="terms">
                                     <a href="#" class="text-decoration-none">Kullanım Koşulları</a>'nı okudum ve kabul ediyorum
                                 </label>
@@ -181,10 +195,10 @@
                             <button type="submit" class="btn btn-orange w-100">
                                 <i class="fas fa-user-plus me-2"></i>Kayıt Ol
                             </button>
-                            <div class="text-center mt-3">
-                                <span>Zaten hesabınız var mı? <a href="/login" class="login-link">Giriş Yap</a></span>
-                            </div>
                         </form>
+                        <div class="text-center mt-3">
+                            <span>Zaten hesabınız var mı? <a href="/login" class="login-link">Giriş Yap</a></span>
+                        </div>
                     </div>
                 </div>
             </div>

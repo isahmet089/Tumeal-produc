@@ -4,15 +4,16 @@ const path = require('path');
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const flash = require('connect-flash');
-const expressLayouts = require('express-ejs-layouts');
+const userLocals = require("./middleware/userLocalsAuth");
 
 
 // Middleware
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cookieParser());
 app.use(morgan("dev"));
+app.use(userLocals);
 
 // flash messages
 app.use(flash());
@@ -21,6 +22,7 @@ app.use(flash());
 // view engine setup EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
 //app.use(expressLayouts);
 //app.set('layout', 'layouts/main');
 
@@ -40,11 +42,5 @@ app.get("/", (req, res) => {
     res.redirect("/home");
 });
 
-//global değişkenler
-app.use((req, res, next) => {
-    res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error_msg');
-    next();
-  });
 
 module.exports = app;

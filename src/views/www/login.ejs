@@ -128,14 +128,28 @@
                             <h4>Giriş Yap</h4>
                             <p class="text-muted">Hesabınıza giriş yaparak yorum yapabilir ve puanlama yapabilirsiniz.</p>
                         </div>
-                        <form>
+                        <!-- Alert mesajları buraya eklendi -->
+<% if (error) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
+
+<% if (success) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
+                        <form action="/login" method="POST">
                             <div class="mb-3">
                                 <label for="email" class="form-label">E-posta Adresi</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="fa-regular fa-envelope"></i>
                                     </span>
-                                    <input type="email" class="form-control" id="email" placeholder="ornek@universite.edu.tr" required>
+                                    <input type="email" name="email" class="form-control" id="email" placeholder="ornek@universite.edu.tr" required>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -144,26 +158,23 @@
                                     <span class="input-group-text">
                                         <i class="fa-solid fa-lock"></i>
                                     </span>
-                                    <input type="password" class="form-control" id="password" placeholder="••••••••" required>
-                                    <span class="input-group-text">
-                                        <i class="fa-regular fa-eye"></i>
-                                    </span>
+                                    <input type="password" name="password" class="form-control" id="password" placeholder="••••••••" required>
                                 </div>
                             </div>
                             <div class="mb-3 d-flex justify-content-between align-items-center">
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="remember">
+                                    <input type="checkbox" name="remember" class="form-check-input" id="remember">
                                     <label class="form-check-label" for="remember">Beni hatırla</label>
                                 </div>
-                                <a href="#" class="forgot-link">Şifremi unuttum</a>
+                                <a href="/forgot-password" class="forgot-link">Şifremi unuttum</a>
                             </div>
                             <button type="submit" class="btn btn-orange w-100">
                                 <i class="fa-solid fa-sign-in-alt me-2"></i>Giriş Yap
                             </button>
-                            <div class="text-center mt-3">
-                                <span>Hesabınız yok mu? <a href="/register" class="register-link">Kayıt Ol</a></span>
-                            </div>
                         </form>
+                        <div class="text-center mt-3">
+                            <span>Hesabınız yok mu? <a href="/register" class="register-link">Kayıt Ol</a></span>
+                        </div>
                     </div>
                 </div>
             </div>
