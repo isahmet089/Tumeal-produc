@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profilim | TuMeal</title>
+  <title><%= profileUser.firstName %> <%= profileUser.lastName %> | TuMeal</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <style>
-    body {
+     body {
       background: #f6f8fa;
       font-family: 'Poppins', sans-serif;
     }
@@ -162,35 +162,35 @@
     .profile-btns .btn {
         width: 100%;
     }
-}
+  }
+    /* ... profile.ejs ile aynı stiller ... */
+    .add-friend-btn {
+      margin-top: 1rem;
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 10px 24px;
+      background: #ff6b35;
+      color: #fff;
+      border: none;
+      transition: background 0.2s;
+    }
+    .add-friend-btn:hover {
+      background: #e55d2a;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
   <%- include('../partials/www/common/navbar') %>
   <div class="profile-card">
-    <% if (error) { %>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <%= error %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-  <% } %>
-  
-  <% if (success) { %>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <%= success %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-  <% } %>
-    <img src="https://ui-avatars.com/api/?name=<%= user.firstName %>+<%= user.lastName %>&background=ececec&color=2c3e50"
+    <img src="https://ui-avatars.com/api/?name=<%= profileUser.firstName %>+<%= profileUser.lastName %>&background=ececec&color=2c3e50"
          class="profile-avatar"
-         alt="<%= user.firstName %> <%= user.lastName %>">
-    <div class="profile-name"><%= user.firstName %> <%= user.lastName %></div>
-    <div class="profile-email"><%= user.email %></div>
-    <div class="profile-id">Öğrenci No: <%= user.studentId %></div>
-
-    <!-- Hesap Durumu Rozeti -->
+         alt="<%= profileUser.firstName %> <%= profileUser.lastName %>">
+    <div class="profile-name"><%= profileUser.firstName %> <%= profileUser.lastName %></div>
+    <div class="profile-email"><%= profileUser.email %></div>
+    <div class="profile-id">Öğrenci No: <%= profileUser.studentId %></div>
     <div class="account-status mb-3">
-        <% if (user.isVerified) { %>
+        <% if (profileUser.isVerified) { %>
             <span class="badge bg-success px-3 py-2">
                 <i class="fas fa-check-circle me-1"></i> Onaylı Hesap
             </span>
@@ -200,47 +200,48 @@
             </span>
         <% } %>
     </div>
-
-    <div class="profile-btns mb-2 d-flex flex-wrap justify-content-center gap-2">
-        <a href="/profile/comments" class="btn btn-orange">
-            <i class="fa-solid fa-history me-2"></i>Yorum Geçmişim
-        </a>
-        <a href="/profile/edit" class="btn btn-outline-orange">
-            <i class="fa-solid fa-user-edit me-2"></i>Profili Düzenle
-        </a>
-        <a href="/profile/change-password" class="btn btn-outline-orange">
-            <i class="fa-solid fa-key me-2"></i>Şifre Değiştir
-        </a>
-        <% if (!user.isVerified) { %>
-          <form action="/resend-verification" method="POST">
-            <input type="hidden" name="userId" value="<%= user._id %>">
-            <button type="submit" class="btn btn-warning">
-                <i class="fa-solid fa-envelope me-2"></i>Onay Maili Gönder
-            </button>
-        </form>
+    <% if (!currentUser || currentUser._id.toString() !== profileUser._id.toString()) { %>
+      <button class="add-friend-btn">
+        <i class="fa-solid fa-user-plus me-2"></i>Arkadaş Ekle
+      </button>
+    <% } %>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="posts-section mb-4">
+        <h4 class="mb-3 mt-4 fw-bold text-center" style="color:#2c3e50;">Postlar</h4>
+        <% if (posts.length === 0) { %>
+          <div class="alert alert-info text-center">Henüz post yok.</div>
+        <% } else { %>
+          <% posts.forEach(post => { %>
+            <div class="comment-card">
+              <div class="comment-header">
+                <span class="comment-name"><%= profileUser.firstName %> <%= profileUser.lastName %></span>
+                <span class="comment-date"><%= post.createdAt.toLocaleDateString('tr-TR') %></span>
+              </div>
+              <div class="comment-text"><%= post.content %></div>
+            </div>
+          <% }) %>
         <% } %>
-    </div>
-</div>
-    
-    <div class="row justify-content-center">
-      <div class="col-lg-7">
-       <!-- Posts Section -->
-    <div class="posts-section mb-4">
-      <h4 class="mb-3 mt-4 fw-bold text-center" style="color:#2c3e50;">Postlar</h4>
-      <div id="selfPostsContainer"><%- include('../partials/www/components/selfPosts') %></div>
-      
-    </div>
-
-    <!-- Comments Section -->
-    <div class="comments-section">
-      <h4 class="mb-3 mt-4 fw-bold text-center" style="color:#2c3e50;">Yorumlar</h4>
-      <div id="selfCommentsContainer"><%- include('../partials/www/components/selfComments') %></div>
-      
-    </div>
-        
+      </div>
+      <div class="comments-section">
+        <h4 class="mb-3 mt-4 fw-bold text-center" style="color:#2c3e50;">Yorumlar</h4>
+        <% if (comments.length === 0) { %>
+          <div class="alert alert-info text-center">Henüz yorum yok.</div>
+        <% } else { %>
+          <% comments.forEach(comment => { %>
+            <div class="comment-card">
+              <div class="comment-header">
+                <span class="comment-name"><%= profileUser.firstName %> <%= profileUser.lastName %></span>
+                <span class="comment-date"><%= comment.createdAt.toLocaleDateString('tr-TR') %></span>
+              </div>
+              <div class="comment-text"><%= comment.content %></div>
+            </div>
+          <% }) %>
+        <% } %>
       </div>
     </div>
   </div>
   <%- include('../partials/www/common/footer') %>
 </body>
-</html> 
+</html>

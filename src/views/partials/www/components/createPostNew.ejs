@@ -1,0 +1,302 @@
+<div class="create-post-card mb-4">
+    <div class="d-flex align-items-center mb-2">
+        <% if (locals.user) { %>
+            <img src="https://ui-avatars.com/api/?name=<%= locals.user.firstName%>+<%= locals.user.lastName%>&background=ececec&color=2c3e50" 
+                 class="post-avatar me-2" 
+                 alt="<%= locals.user.firstName %> <%= locals.user.lastName %>">
+        <% } else { %>
+            <img src="https://ui-avatars.com/api/?name=Misafir&background=ececec&color=2c3e50" 
+                 class="post-avatar me-2" 
+                 alt="Misafir">
+        <% } %>
+        <div class="position-relative w-100">
+            <textarea id="postContent" 
+                      class="form-control" 
+                      placeholder="Neler düşünüyorsun?" 
+                      maxlength="180"></textarea>
+        </div>
+    </div>
+    
+    <!-- Keyword Seçim Alanı -->
+    <div class="keyword-selection mb-2">
+        <div class="selected-keywords" id="selectedKeywords"></div>
+        <div class="keyword-suggestions" id="keywordSuggestions">
+            <div class="keyword-chip" data-keyword="yemekhane">#yemekhane</div>
+            <div class="keyword-chip" data-keyword="menu">#menu</div>
+            <div class="keyword-chip" data-keyword="bugun">#bugun</div>
+            <div class="keyword-chip" data-keyword="oneri">#oneri</div>
+            <div class="keyword-chip" data-keyword="sikayet">#sikayet</div>
+            <div class="keyword-chip" data-keyword="tesekkur">#tesekkur</div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <small class="text-muted" id="charCount">0/180</small>
+        <button id="createPostBtn" class="btn btn-orange">
+            <i class="fa-solid fa-paper-plane me-2"></i>Paylaş
+        </button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const postContent = document.getElementById('postContent');
+    const createPostBtn = document.getElementById('createPostBtn');
+    const charCount = document.getElementById('charCount');
+    const selectedKeywords = document.getElementById('selectedKeywords');
+    const keywordChips = document.querySelectorAll('.keyword-chip');
+    
+    let selectedTags = new Set();
+    let userContent = ''; // Kullanıcının yazdığı içerik
+    let isUserTyping = false; // Kullanıcı yazıyor mu?
+
+    // Keyword seçme işlemi
+    keywordChips.forEach(chip => {
+        chip.addEventListener('click', function() {
+            const keyword = this.dataset.keyword;
+            
+            if (selectedTags.has(keyword)) {
+                // Keyword'ü kaldır
+                selectedTags.delete(keyword);
+                this.classList.remove('selected');
+            } else {
+                // Keyword'ü ekle
+                if (selectedTags.size < 3) { // Maksimum 3 keyword
+                    selectedTags.add(keyword);
+                    this.classList.add('selected');
+                } else {
+                    alert('En fazla 3 etiket seçebilirsiniz!');
+                }
+            }
+            
+            updateSelectedKeywords();
+            updatePostContent();
+        });
+    });
+
+    // Seçili keyword'leri güncelle
+    function updateSelectedKeywords() {
+        selectedKeywords.innerHTML = Array.from(selectedTags).map(tag => 
+            `<span class="selected-keyword">
+                #${tag}
+                <i class="fas fa-times" onclick="removeKeyword('${tag}')"></i>
+            </span>`
+        ).join('');
+    }
+
+    // Post içeriğini güncelle
+    function updatePostContent() {
+        if (isUserTyping) return; // Kullanıcı yazıyorsa güncelleme yapma
+
+        const keywords = Array.from(selectedTags).map(tag => `#${tag}`).join(' ');
+        const newContent = userContent + (keywords ? ` ${keywords}` : '');
+        
+        if (newContent.length <= 180) {
+            postContent.value = newContent;
+            charCount.textContent = `${newContent.length}/180`;
+            
+            if (newContent.length > 150) {
+                charCount.style.color = '#ff6b35';
+            } else {
+                charCount.style.color = '#6c757d';
+            }
+        } else {
+            alert('Seçilen etiketler karakter limitini aşıyor!');
+            const lastTag = Array.from(selectedTags).pop();
+            selectedTags.delete(lastTag);
+            document.querySelector(`[data-keyword="${lastTag}"]`).classList.remove('selected');
+            updateSelectedKeywords();
+            updatePostContent();
+        }
+    }
+
+    // Keyword kaldırma
+    window.removeKeyword = function(keyword) {
+        selectedTags.delete(keyword);
+        document.querySelector(`[data-keyword="${keyword}"]`).classList.remove('selected');
+        updateSelectedKeywords();
+        updatePostContent();
+    };
+
+    // Karakter sayacı ve içerik güncelleme
+    postContent.addEventListener('input', function() {
+        isUserTyping = true;
+        userContent = this.value;
+        const length = this.value.length;
+        charCount.textContent = `${length}/180`;
+        
+        if (length > 150) {
+            charCount.style.color = '#ff6b35';
+        } else {
+            charCount.style.color = '#6c757d';
+        }
+    });
+
+    // Kullanıcı yazmayı bıraktığında
+    postContent.addEventListener('blur', function() {
+        isUserTyping = false;
+        updatePostContent();
+    });
+
+    // Paylaşım oluşturma
+    createPostBtn.addEventListener('click', async function() {
+        const content = postContent.value.trim();
+        
+        if (!content) {
+            alert('Lütfen bir şeyler yazın!');
+            return;
+        }
+
+        try {
+            createPostBtn.disabled = true;
+            createPostBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Paylaşılıyor...';
+
+            const response = await fetch('/create-post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    content,
+                    keywords: Array.from(selectedTags)
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                postContent.value = '';
+                userContent = '';
+                charCount.textContent = '0/180';
+                charCount.style.color = '#6c757d';
+                selectedTags.clear();
+                updateSelectedKeywords();
+                keywordChips.forEach(chip => chip.classList.remove('selected'));
+                window.location.reload();
+            } else {
+                throw new Error(data.error || 'Paylaşım oluşturulamadı');
+            }
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            createPostBtn.disabled = false;
+            createPostBtn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>Paylaş';
+        }
+    });
+});
+</script>
+
+<style>
+.create-post-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+    padding: 1.5rem;
+}
+
+.post-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+textarea.form-control {
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    padding: 1rem;
+    font-size: 1.1rem;
+    min-height: 60px;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+textarea.form-control:focus {
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.1);
+}
+
+.keyword-selection {
+    margin-top: 1rem;
+}
+
+.keyword-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.keyword-chip {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.keyword-chip:hover {
+    background: #ff6b35;
+    color: white;
+    border-color: #ff6b35;
+}
+
+.keyword-chip.selected {
+    background: #ff6b35;
+    color: white;
+    border-color: #ff6b35;
+}
+
+.selected-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.selected-keyword {
+    background: #ff6b35;
+    color: white;
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.selected-keyword i {
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.selected-keyword i:hover {
+    color: #ffd6c9;
+}
+
+.btn-orange {
+    background: #ff6b35;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 8px 24px;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-orange:hover {
+    background: #e55d2a;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.btn-orange:disabled {
+    background: #ffb088;
+    cursor: not-allowed;
+    transform: none;
+}
+
+</style>

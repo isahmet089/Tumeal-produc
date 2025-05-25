@@ -1,0 +1,504 @@
+<div id="postsContainer">
+    <!-- Postlar buraya dinamik olarak eklenecek -->
+</div>
+
+<script>
+// Postları yükle
+async function loadPosts() {
+    try {
+        const response = await fetch('/get-posts');
+        const posts = await response.json();
+        
+        const postsContainer = document.getElementById('postsContainer');
+        postsContainer.innerHTML = ''; // Mevcut postları temizle
+
+        posts.forEach(post => {
+            const postElement = createPostElement(post);
+            postsContainer.appendChild(postElement);
+        });
+    } catch (error) {
+        console.error('Post yükleme hatası:', error);
+    }
+}
+
+// Post elementi oluştur
+// Post elementi oluştur
+function createPostElement(post) {
+    const postDiv = document.createElement('div');
+    postDiv.className = 'post-card';
+    
+    // Post içeriğini işle - keyword'leri bold yap
+    let processedContent = post.content;
+    if (post.keywords && post.keywords.length > 0) {
+        post.keywords.forEach(keyword => {
+            const regex = new RegExp(`#${keyword}`, 'g');
+            processedContent = processedContent.replace(regex, `<strong>#${keyword}</strong>`);
+        });
+    }
+    
+    postDiv.innerHTML = `
+        <div class="post-header">   
+            <img src="https://ui-avatars.com/api/?name=${post.user.firstName}+${post.user.lastName}&background=ececec&color=2c3e50" 
+                 class="post-avatar" 
+                 alt="${post.user.firstName} ${post.user.lastName}">
+            <span onclick="window.location.href='/user/${post.user._id}'" class="post-name">${post.user.firstName} ${post.user.lastName}</span>
+            <span class="post-time">${formatTime(post.createdAt)}</span>
+        </div>
+        <div class="post-content">${processedContent}</div>
+        <div class="post-actions">
+             <span type="button" class="post-action like-btn ${post.likes.includes(window.currentUser?.id) ? 'active' : ''}" 
+                    data-post-id="${post._id}">
+                <i class="${post.likes.includes(window.currentUser?.id) ? 'fa-solid' : 'fa-regular'} fa-heart"></i> 
+                <span class="like-count">${post.likes.length}</span>
+            </span>
+            <span class="post-action reply-btn" data-post-id="${post._id}">
+                <i class="fa-regular fa-comment"></i> 
+                <span class="comment-count">${post.comments.length}</span>
+            </span>
+        </div>
+     <!-- Yorum Formu -->
+<div class="inline-reply" id="reply-${post._id}">
+    <form class="comment-form" onsubmit="return handleCommentSubmit(event, '${post._id}')">
+        <textarea class="form-control comment-textarea" 
+                  name="content"
+                  placeholder="Yanıtınızı yazın..." 
+                  maxlength="180"
+                  required></textarea>
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted char-count">0/180</small>
+            <button type="submit" class="btn btn-orange reply-submit" data-post-id="${post._id}">
+                <i class="fa-solid fa-paper-plane me-2"></i>Yanıtla
+            </button>
+        </div>
+    </form>
+</div>
+        <!-- Yorumlar -->       
+        <div class="comments-thread" id="comments-${post._id}">
+            ${renderComments(post.comments)}
+        </div>
+    `;
+
+    // Event listener'ları ekle
+    addEventListeners(postDiv, post);
+    return postDiv;
+}
+
+// Yorumları render et
+function renderComments(comments) {
+    if (!comments || comments.length === 0) return '';
+    
+    return comments.map(comment => `
+        <div class="comment-reply">
+            <img src="https://ui-avatars.com/api/?name=${comment.user.firstName}+${comment.user.lastName}&background=ececec&color=2c3e50" 
+                 class="comment-avatar" 
+                 alt="${comment.user.firstName} ${comment.user.lastName}">
+            <div class="comment-body">
+                <span class="comment-name">${comment.user.firstName} ${comment.user.lastName}</span>
+                <span class="comment-time">${formatTime(comment.createdAt)}</span>
+                <div>${comment.content}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Beğeni işlemi için yeni fonksiyon
+async function handleLike(postId) {
+    if (!window.currentUser || !window.currentUser.isAuthenticated) {
+        alert('Beğenmek için giriş yapmalısınız!');
+        return;
+    }
+
+    const likeBtn = document.querySelector(`.like-btn[data-post-id="${postId}"]`);
+    const likeIcon = likeBtn.querySelector('i');
+    const likeCount = likeBtn.querySelector('.like-count');
+
+    try {
+        likeBtn.disabled = true;
+        
+        const response = await fetch('/like-post', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ postId })
+        });
+
+        if (!response.ok) {
+            throw new Error('Beğeni işlemi başarısız');
+        }
+
+        const data = await response.json();
+        
+        // Beğeni durumunu güncelle
+        likeBtn.classList.toggle('active');
+        likeIcon.classList.toggle('fa-regular');
+        likeIcon.classList.toggle('fa-solid');
+        likeCount.textContent = data.likes.length;
+
+        
+
+    } catch (error) {
+        console.error('Beğeni hatası:', error);
+        showErrorMessage(error.message);
+    } finally {
+        likeBtn.disabled = false;
+    }
+}
+
+// Event listener'ları güncelle
+function addEventListeners(postElement, post) {
+    // Beğeni butonu
+    const likeBtn = postElement.querySelector('.like-btn');
+    likeBtn.addEventListener('click', () => handleLike(post._id));
+
+    // Diğer event listener'lar aynı kalacak...
+}
+
+
+// Event listener'ları ekle
+function addEventListeners(postElement, post) {
+    // Beğeni butonu
+    const likeBtn = postElement.querySelector('.like-btn');
+    likeBtn.addEventListener('click', () => handleLike(post._id));
+
+    // Yorum butonu
+    const replyBtn = postElement.querySelector('.reply-btn');
+    replyBtn.addEventListener('click', () => {
+        const replyForm = postElement.querySelector('.inline-reply');
+        replyForm.classList.toggle('active');
+    });
+
+    // Yorum gönderme
+    const replySubmit = postElement.querySelector('.reply-submit');
+    replySubmit.addEventListener('click', () => handleComment(post._id));
+}
+
+// Zaman formatla
+function formatTime(date) {
+    const now = new Date();
+    const postDate = new Date(date);
+    const diff = now - postDate;
+    
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (minutes < 60) return `${minutes} dakika önce`;
+    if (hours < 24) return `${hours} saat önce`;
+    return `${days} gün önce`;
+}
+
+// Sayfa yüklendiğinde postları getir
+document.addEventListener('DOMContentLoaded', loadPosts);
+
+// Her 30 saniyede bir postları güncelle
+setInterval(loadPosts, 30000);
+</script>
+
+<style>
+.post-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.3rem;
+}
+
+.post-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1rem;
+}
+
+.post-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-right: 0.5rem;
+}
+
+.post-time {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+}
+
+.post-content {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    margin: 0.7rem 0;
+}
+
+.post-actions {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.post-action {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.post-action:hover {
+    color: #ff6b35;
+}
+.post-action.active {
+    color: #ff6b35;
+}
+.inline-reply {
+    display: none;
+    margin-top: 1rem;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.inline-reply.active {
+    display: block;
+    
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<script>
+    // Yorum gönderme ve render etme fonksiyonu
+    async function handleCommentSubmit(event, postId) {
+        event.preventDefault();
+        
+        if (!window.currentUser || !window.currentUser.isAuthenticated) {
+            alert('Yorum yapmak için giriş yapmalısınız!');
+            return false;
+        }
+    
+        const form = event.target;
+        const textarea = form.querySelector('textarea');
+        const submitBtn = form.querySelector('.reply-submit');
+        const content = textarea.value.trim();
+        
+        if (!content) {
+            alert('Lütfen bir yorum yazın!');
+            return false;
+        }
+    
+        try {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Gönderiliyor...';
+    
+            const response = await fetch('/add-comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    postId: postId, 
+                    content: content 
+                })
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Yorum eklenemedi');
+            }
+    
+            const data = await response.json();
+            
+            // Yeni yorumu render et
+            const commentsThread = document.getElementById(`comments-${postId}`);
+            const newComment = createCommentElement(data.comment);
+            
+            // Yorumu en üste ekle
+            if (commentsThread.firstChild) {
+                commentsThread.insertBefore(newComment, commentsThread.firstChild);
+            } else {
+                commentsThread.appendChild(newComment);
+            }
+    
+            // Yorum sayısını güncelle
+            const commentCount = document.querySelector(`.reply-btn[data-post-id="${postId}"] .comment-count`);
+            commentCount.textContent = parseInt(commentCount.textContent) + 1;
+    
+            // Formu temizle ve gizle
+            form.reset();
+            form.closest('.inline-reply').querySelector('.char-count').textContent = '0/180';
+            form.closest('.inline-reply').classList.remove('active');
+    
+            // Başarılı mesajı göster
+            showSuccessMessage('Yorumunuz başarıyla eklendi');
+    
+        } catch (error) {
+            console.error('Yorum hatası:', error);
+            showErrorMessage(error.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>Yanıtla';
+        }
+    
+        return false;
+    }
+    
+    // Yorum elementi oluştur
+    function createCommentElement(comment) {
+        const div = document.createElement('div');
+        div.className = 'comment-reply';
+        div.innerHTML = `
+            <img src="https://ui-avatars.com/api/?name=${comment.user.firstName}+${comment.user.lastName}&background=ececec&color=2c3e50" 
+                 class="comment-avatar" 
+                 alt="${comment.user.firstName} ${comment.user.lastName}">
+            <div class="comment-body">
+                <div class="comment-header">
+                    <span onclick="window.location.href='/user/${comment.user._id}'" class="comment-name">${comment.user.firstName} ${comment.user.lastName}</span>
+                    <span class="comment-time">Şimdi</span>
+                </div>
+                <div class="comment-content">${comment.content}</div>
+            </div>
+        `;
+        return div;
+    }
+    
+    // Başarılı mesajı göster
+    function showSuccessMessage(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-success alert-dismissible fade show';
+        alertDiv.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        document.querySelector('.post-card').insertBefore(alertDiv, document.querySelector('.post-actions'));
+        
+        // 3 saniye sonra mesajı kaldır
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
+    }
+    
+    // Hata mesajı göster
+    function showErrorMessage(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+        alertDiv.innerHTML = `
+            <i class="fas fa-exclamation-circle me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        document.querySelector('.post-card').insertBefore(alertDiv, document.querySelector('.post-actions'));
+        
+        // 3 saniye sonra mesajı kaldır
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
+    }
+    
+    // Karakter sayacı
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.comment-textarea').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                const maxLength = 180;
+                const currentLength = this.value.length;
+                const counter = this.closest('.inline-reply').querySelector('.char-count');
+                
+                counter.textContent = `${currentLength}/${maxLength}`;
+                
+                if (currentLength > maxLength * 0.8) {
+                    counter.style.color = '#ff6b35';
+                } else {
+                    counter.style.color = '#6c757d';
+                }
+            });
+        });
+    });
+    </script>
+    
+    <style>
+    .comment-form {
+        width: 100%;
+    }
+    
+    .comment-textarea {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        padding: 0.8rem;
+        font-size: 1rem;
+        min-height: 60px;
+        resize: vertical;
+        margin-bottom: 0.5rem;
+        transition: border-color 0.2s;
+    }
+    
+    .comment-textarea:focus {
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.1);
+        outline: none;
+    }
+    
+    .comment-reply {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.3rem;
+    }
+    
+    .comment-content {
+        color: #2c3e50;
+        line-height: 1.4;
+    }
+    
+    .alert {
+        position: relative;
+        padding: 0.75rem 1.25rem;
+        margin-bottom: 1rem;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+        animation: slideIn 0.3s ease-in-out;
+    }
+    
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+    
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(0); }
+    }
+    .post-content {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    margin: 0.7rem 0;
+    line-height: 1.5;
+}
+
+.post-content strong {
+    font-weight: 600;
+    color: #ff6b35;
+}
+    </style>    

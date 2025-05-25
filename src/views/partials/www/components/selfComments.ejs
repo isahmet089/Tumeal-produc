@@ -1,0 +1,218 @@
+<div id="selfCommentsContainer">
+  <!-- Kullanıcının yorumları buraya dinamik olarak eklenecek -->
+</div>
+
+<script>
+// Kullanıcının yorumlarını yükle
+async function loadSelfComments() {
+  try {
+      const response = await fetch('/self-comments');
+      if (!response.ok) {
+          throw new Error('Yorumlar yüklenemedi');
+      }
+      const comments = await response.json();
+      
+      const commentsContainer = document.getElementById('selfCommentsContainer');
+      commentsContainer.innerHTML = '';
+
+      if (comments.length === 0) {
+          commentsContainer.innerHTML = `
+              <div class="alert alert-info">
+                  <i class="fas fa-info-circle me-2"></i>
+                  Henüz yorum yapmadınız.
+              </div>  
+          `;
+          return;
+      }
+
+      comments.forEach(comment => {
+          const commentElement = createCommentElement(comment);
+          commentsContainer.appendChild(commentElement);
+      });
+  } catch (error) {
+      console.error('Yorum yükleme hatası:', error);
+      const commentsContainer = document.getElementById('selfCommentsContainer');
+      commentsContainer.innerHTML = `
+          <div class="alert alert-danger">
+              <i class="fas fa-exclamation-circle me-2"></i>
+              Yorumlar yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.
+          </div>
+      `;
+  }
+}
+
+// Yorum elementi oluştur
+function createCommentElement(comment) {
+  const div = document.createElement('div');
+  div.className = 'comment-card';
+  div.innerHTML = `
+      <div class="comment-header">
+          <img src="https://ui-avatars.com/api/?name=${comment.user.firstName}+${comment.user.lastName}&background=ececec&color=2c3e50" 
+               class="comment-avatar" 
+               alt="${comment.user.firstName} ${comment.user.lastName}">
+          <div class="comment-info">
+              <span class="comment-name">${comment.user.firstName} ${comment.user.lastName}</span>
+              <span class="comment-date">${formatTime(comment.createdAt)}</span>
+          </div>
+          <div class="comment-actions ms-auto">
+              <button class="btn btn-sm btn-outline-danger delete-comment" data-comment-id="${comment._id}">
+                  <i class="fas fa-trash"></i>
+              </button>
+          </div>
+      </div>
+      <div class="post-reference">
+          <small class="text-muted">
+              <i class="fas fa-reply"></i> 
+              ${comment.post.user.firstName} ${comment.post.user.lastName}'in postuna yanıt:
+          </small>
+          <p class="post-content">${comment.post.content}</p>
+      </div>
+      <p class="comment-text">${comment.content}</p>
+      <div class="comment-stats">
+          <span class="me-3">
+              <i class="fa-regular fa-heart"></i> 
+              ${comment.likes ? comment.likes.length : 0} beğeni
+          </span>
+      </div>
+  `;
+
+  // Event listener'ları ekle
+  addEventListeners(div, comment);
+  return div;
+}
+
+// Event listener'ları ekle
+function addEventListeners(commentElement, comment) {
+  // Yorum silme butonu
+  const deleteBtn = commentElement.querySelector('.delete-comment');
+  deleteBtn.addEventListener('click', () => handleDeleteComment(comment._id));
+}
+
+// Yorum silme işlemi
+async function handleDeleteComment(commentId) {
+  if (!confirm('Bu yorumu silmek istediğinizden emin misiniz?')) {
+      return;
+  }
+
+  try {
+      const response = await fetch(`/delete-comment/${commentId}`, {
+          method: 'DELETE'
+      });
+
+      if (!response.ok) {
+          throw new Error('Yorum silinemedi');
+      }
+
+      // Yorumu DOM'dan kaldır
+      const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`).closest('.comment-card');
+      commentElement.remove();
+
+      // Başarılı mesajı göster
+      showSuccessMessage('Yorum başarıyla silindi');
+
+  } catch (error) {
+      console.error('Yorum silme hatası:', error);
+      showErrorMessage(error.message);
+  }
+}
+
+// Zaman formatla
+function formatTime(date) {
+  const now = new Date();
+  const commentDate = new Date(date);
+  const diff = now - commentDate;
+  
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (minutes < 60) return `${minutes} dakika önce`;
+  if (hours < 24) return `${hours} saat önce`;
+  return `${days} gün önce`;
+}
+
+// Sayfa yüklendiğinde yorumları getir
+document.addEventListener('DOMContentLoaded', loadSelfComments);
+</script>
+
+<style>
+.comment-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.comment-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.comment-date {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.post-reference {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.post-content {
+  color: #2c3e50;
+  margin: 0.5rem 0 0;
+  font-size: 0.95rem;
+}
+
+.comment-text {
+  color: #2c3e50;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.comment-stats {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.comment-stats i {
+  margin-right: 0.3rem;
+}
+
+.btn-outline-danger {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.btn-outline-danger:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>

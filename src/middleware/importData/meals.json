@@ -1,0 +1,530 @@
+[
+  {
+    "date": "2025-05-24T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "EZOGELİN ÇORBASI",
+        "calories": 214
+      },
+      "anaYemek": {
+        "name": "TAVUK TANTUNİ",
+        "calories": 564
+      },
+      "pilav": {
+        "name": "SOSLU KIZARTMA",
+        "calories": 516
+      },
+      "tatli": {
+        "name": "AYRAN",
+        "calories": 76
+      }
+    },
+    "totalCalories": 1370
+  },
+  {
+    "date": "2025-05-25T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "DOMATES ÇORBA",
+        "calories": 159
+      },
+      "anaYemek": {
+        "name": "ANKARA TAVA",
+        "calories": 660
+      },
+      "pilav": {
+        "name": "ZYT. TAZE FASULYE",
+        "calories": 207
+      },
+      "tatli": {
+        "name": "YOĞURT",
+        "calories": 114
+      }
+    },
+    "totalCalories": 1140
+  },
+  {
+    "date": "2025-05-26T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "EZOGELİN ÇORBASI",
+        "calories": 214
+      },
+      "anaYemek": {
+        "name": "TAVUK TANTUNİ",
+        "calories": 564
+      },
+      "pilav": {
+        "name": "SOSLU KIZARTMA",
+        "calories": 516
+      },
+      "tatli": {
+        "name": "AYRAN",
+        "calories": 76
+      }
+    },
+    "totalCalories": 1370
+  },
+  {
+    "date": "2025-05-27T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "SEBZE ÇORBA",
+        "calories": 165
+      },
+      "anaYemek": {
+        "name": "TEKİRDAĞ KÖFTE-PİYAZ",
+        "calories": 607
+      },
+      "pilav": {
+        "name": "SOSLU MAKARNA",
+        "calories": 386
+      },
+      "tatli": {
+        "name": "REVANİ",
+        "calories": 353
+      }
+    },
+    "totalCalories": 1511
+  },
+  {
+    "date": "2025-05-28T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "SÜZME MERCİMEK ÇORBA",
+        "calories": 237
+      },
+      "anaYemek": {
+        "name": "TAVUK KAVURMA",
+        "calories": 378
+      },
+      "pilav": {
+        "name": "BULGUR PİLAVI",
+        "calories": 309
+      },
+      "tatli": {
+        "name": "AYRAN",
+        "calories": 76
+      }
+    },
+    "totalCalories": 1000
+  },
+  {
+    "date": "2025-05-29T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "ARABAŞI ÇORBASI",
+        "calories": 274
+      },
+      "anaYemek": {
+        "name": "ETLİ TÜRLÜ",
+        "calories": 336
+      },
+      "pilav": {
+        "name": "PEYNİRLİ BÖREK",
+        "calories": 465
+      },
+      "tatli": {
+        "name": "KOMPOSTO",
+        "calories": 150
+      }
+    },
+    "totalCalories": 1225
+  },
+  {
+    "date": "2025-05-30T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "SEBZE ÇORBASI",
+        "calories": 165
+      },
+      "anaYemek": {
+        "name": "ETLİ NOHUT",
+        "calories": 380
+      },
+      "pilav": {
+        "name": "PİRİNÇ PİLAVI",
+        "calories": 328
+      },
+      "tatli": {
+        "name": "YOĞURT",
+        "calories": 114
+      }
+    },
+    "totalCalories": 987
+  },
+  {
+    "date": "2025-04-07T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "MERCİMEK ÇORBA",
+        "calories": 191
+      },
+      "anaYemek": {
+        "name": "TAVUK DÖNER PATATES KIZARTMASI",
+        "calories": 635
+      },
+      "pilav": {
+        "name": "PİRİNÇ PİLAVI",
+        "calories": 328
+      },
+      "tatli": {
+        "name": "AYRAN",
+        "calories": 76
+      }
+    },
+    "totalCalories": 1230
+  },
+  {
+    "date": "2025-04-08T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "KAFKAS ÇORBA",
+        "calories": 145
+      },
+      "anaYemek": {
+        "name": "ETLİ KURU FASULYE",
+        "calories": 380
+      },
+      "pilav": {
+        "name": "BULGUR PİLAVI",
+        "calories": 309
+      },
+      "tatli": {
+        "name": "TURŞU",
+        "calories": 40
+      }
+    },
+    "totalCalories": 874
+  },
+  {
+    "date": "2025-04-09T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "TARHANA ÇORBA",
+        "calories": 120
+      },
+      "anaYemek": {
+        "name": "SALÇALI KÖFTE",
+        "calories": 408
+      },
+      "pilav": {
+        "name": "PEYNİRLİ MAKARNA",
+        "calories": 337
+      },
+      "tatli": {
+        "name": "TULUMBA",
+        "calories": 450
+      }
+    },
+    "totalCalories": 1315
+  },
+  {
+    "date": "2025-04-10T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "ŞEHRİYE ÇORBA",
+        "calories": 119
+      },
+      "anaYemek": {
+        "name": "KIYMALI ISPANAK",
+        "calories": 332
+      },
+      "pilav": {
+        "name": "PATATESLİ BÖREK",
+        "calories": 430
+      },
+      "tatli": {
+        "name": "HOŞAF",
+        "calories": 150
+      }
+    },
+    "totalCalories": 1031
+  },
+  {
+    "date": "2025-04-11T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "SÜZME MERCİMEK ÇORBA",
+        "calories": 207
+      },
+      "anaYemek": {
+        "name": "ELBASAN TAVA",
+        "calories": 584
+      },
+      "pilav": {
+        "name": "BULGUR PİLAVI",
+        "calories": 309
+      },
+      "tatli": {
+        "name": "AYRAN",
+        "calories": 76
+      }
+    },
+    "totalCalories": 1176
+  },
+  {
+    "date": "2025-04-14T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "DÜĞÜN ÇORBA",
+        "calories": 177
+      },
+      "anaYemek": {
+        "name": "ETLİ NOHUT",
+        "calories": 350
+      },
+      "pilav": {
+        "name": "BULGUR PİLAVI",
+        "calories": 309
+      },
+      "tatli": {
+        "name": "YOĞURT",
+        "calories": 114
+      }
+    },
+    "totalCalories": 950
+  },
+  {
+    "date": "2025-04-15T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "SÜZME MERCİMEK ÇORBA",
+        "calories": 207
+      },
+      "anaYemek": {
+        "name": "KÖRİ SOSLU TAVUK",
+        "calories": 348
+      },
+      "pilav": {
+        "name": "SOSLU MAKARNA",
+        "calories": 386
+      },
+      "tatli": {
+        "name": "MEYVE",
+        "calories": 60
+      }
+    },
+    "totalCalories": 1001
+  },
+  {
+    "date": "2025-04-16T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "ŞEHRİYE ÇORBA",
+        "calories": 119
+      },
+      "anaYemek": {
+        "name": "PATATES GRATEN",
+        "calories": 478
+      },
+      "pilav": {
+        "name": "MERCİMEKLİ BULGUR PİLAVI",
+        "calories": 328
+      },
+      "tatli": {
+        "name": "YOĞURT",
+        "calories": 114
+      }
+    },
+    "totalCalories": 1039
+  },
+  {
+    "date": "2025-04-17T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "MERCİMEK ÇORBA",
+        "calories": 161
+      },
+      "anaYemek": {
+        "name": "ÇÖKERTME KEBABI",
+        "calories": 699
+      },
+      "pilav": {
+        "name": "PİRİNÇ PİLAVI",
+        "calories": 328
+      },
+      "tatli": {
+        "name": "MEVSİM SALATA",
+        "calories": 97
+      }
+    },
+    "totalCalories": 1285
+  },
+  {
+    "date": "2025-04-18T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "MANTAR ÇORBA",
+        "calories": 121
+      },
+      "anaYemek": {
+        "name": "PÜRELİ ROSTO KÖFTE",
+        "calories": 504
+      },
+      "pilav": {
+        "name": "PEYNİRLİ MAKARNA",
+        "calories": 337
+      },
+      "tatli": {
+        "name": "BAKLAVA",
+        "calories": 475
+      }
+    },
+    "totalCalories": 1437
+  },
+  {
+    "date": "2025-04-21T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "KÖYLÜ ÇORBA",
+        "calories": 122
+      },
+      "anaYemek": {
+        "name": "ETLİ KURU FASÜLYE",
+        "calories": 350
+      },
+      "pilav": {
+        "name": "PİRİNÇ PİLAVI",
+        "calories": 328
+      },
+      "tatli": {
+        "name": "TURŞU",
+        "calories": 40
+      }
+    },
+    "totalCalories": 840
+  },
+  {
+    "date": "2025-04-22T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "SÜZME MERCİMEK ÇORBASI",
+        "calories": 207
+      },
+      "anaYemek": {
+        "name": "PİZZA PATATES KIZARTMASI",
+        "calories": 520
+      },
+      "pilav": {
+        "name": "ZEYTİNYAĞLI TAZE FASULYE",
+        "calories": 0
+      },
+      "tatli": {
+        "name": "TULUMBA",
+        "calories": 450
+      }
+    },
+    "totalCalories": 1253
+  },
+  {
+    "date": "2025-04-24T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "DOMATES ÇORBA",
+        "calories": 129
+      },
+      "anaYemek": {
+        "name": "PİLAV ÜSTÜ TAVUK DÖNER",
+        "calories": 579
+      },
+      "pilav": {
+        "name": "ZEYTİNYAĞLI TAZE FASULYE",
+        "calories": 114
+      },
+      "tatli": {
+        "name": "YOĞURT",
+        "calories": 114
+      }
+    },
+    "totalCalories": 984
+  },
+  {
+    "date": "2025-04-25T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "SEBZE ÇORBA",
+        "calories": 135
+      },
+      "anaYemek": {
+        "name": "HASANPAŞA KÖFTE",
+        "calories": 526
+      },
+      "pilav": {
+        "name": "SALÇALI MAKARNA",
+        "calories": 394
+      },
+      "tatli": {
+        "name": "FINDIKLI KEŞKÜL",
+        "calories": 370
+      }
+    },
+    "totalCalories": 1425
+  },
+  {
+    "date": "2025-04-28T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "KÖYLÜM ÇORBA",
+        "calories": 244
+      },
+      "anaYemek": {
+        "name": "ETLİ NOHUT",
+        "calories": 350
+      },
+      "pilav": {
+        "name": "PİRİNÇ PİLAVI",
+        "calories": 328
+      },
+      "tatli": {
+        "name": "AYRAN",
+        "calories": 76
+      }
+    },
+    "totalCalories": 998
+  },
+  {
+    "date": "2025-04-29T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "EZOGELİN ÇORBASI",
+        "calories": 184
+      },
+      "anaYemek": {
+        "name": "BAZLAMALI YOĞURTLU KEBAP",
+        "calories": 598
+      },
+      "pilav": {
+        "name": "ZEYTİNYAĞLI TAZE FASULYE",
+        "calories": 162
+      },
+      "tatli": {
+        "name": "REVANİ",
+        "calories": 353
+      }
+    },
+    "totalCalories": 1297
+  },
+  {
+    "date": "2025-04-30T00:00:00.000Z",
+    "mealName": {
+      "corba": {
+        "name": "DOMATES ÇORBA",
+        "calories": 129
+      },
+      "anaYemek": {
+        "name": "TAVUK BAGET PATATES KIZARTMASI",
+        "calories": 440
+      },
+      "pilav": {
+        "name": "ERİŞTE",
+        "calories": 328
+      },
+      "tatli": {
+        "name": "MEVSİM SALATA",
+        "calories": 97
+      }
+    },
+    "totalCalories": 994
+  }
+]

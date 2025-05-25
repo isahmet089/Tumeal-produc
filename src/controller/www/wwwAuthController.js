@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const { accessToken, refreshToken } = require("../../config/jwtConfig");
 const RefreshToken = require("../../models/RefreshToken");
 const EmailService = require("../../utils/emailService");
+
+
 // Register sayfasını göster
 const showRegister = (req, res) => {
     res.render('www/register', {
@@ -11,7 +13,6 @@ const showRegister = (req, res) => {
         success: null
     });
 };
-
 // Login sayfasını göster
 const showLogin = (req, res) => {
     res.render('www/login', {
@@ -19,7 +20,6 @@ const showLogin = (req, res) => {
         success: null
     });
 };
-
 // Token oluşturma fonksiyonu
 const generateTokens = (user) => {
     const accessTokenPayload = {
@@ -39,7 +39,6 @@ const generateTokens = (user) => {
 
     return { accessToken: newAccessToken, refreshToken: newRefreshToken };
 };
-
 // Register işlemi
 const register = async (req, res) => {
     const { firstName, lastName, studentId, email, password, confirmPassword, termsAccepted } = req.body;
@@ -185,7 +184,6 @@ const login = async (req, res) => {
         });
     }
 };
-
 // Logout işlemi
 const logout = async (req, res) => {
     try {
@@ -280,7 +278,6 @@ const resetPassword = async (req, res) => {
         return res.redirect('/reset-password-error');
     }
 };
-
 const showResetPasswordFailed = async (req, res) => {
     res.render('www/reset-password-error', {
         error: null,
@@ -293,6 +290,7 @@ const showResetPasswordSuccess = async (req, res) => {
         success: null
     });
 }
+
 //verify email
 const showAccountVerified = async (req, res) => {
     res.render('www/account-verified', {
@@ -350,6 +348,14 @@ const resendVerificationEmail = async (req, res) => {
     }
 }
 
+//Profile sayfasını göster
+const showProfile = async (req, res) => {
+    res.render('www/profile', {
+        error: null,
+        success: null
+    });
+}
+
 module.exports = { 
     showRegister,
     showLogin,
@@ -365,5 +371,6 @@ module.exports = {
     showAccountVerificationFailed,
     showResetPasswordFailed,
     showResetPasswordSuccess,
-    resendVerificationEmail
+    resendVerificationEmail,
+    showProfile
 };

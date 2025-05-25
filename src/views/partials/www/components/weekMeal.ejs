@@ -1,0 +1,168 @@
+<div class="menu-week-container">
+    <div id="weekMenuContent">
+        <!-- Yükleme göstergesi -->
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadWeekMenu();
+});
+
+function loadWeekMenu() {
+    fetch('/mealWeek')
+        .then(response => response.json())
+        .then(meals => {
+            if (meals.error) {
+                showError(meals.error);
+                return;
+            }
+            renderWeekMenu(meals);
+        })
+        .catch(error => {
+            console.error('Haftalık menü yükleme hatası:', error);
+            showError('Haftalık menü yüklenirken bir hata oluştu');
+        });
+}
+
+function renderWeekMenu(meals) {
+    const weekMenuContent = document.getElementById('weekMenuContent');
+    let html = '';
+
+    // Günleri Türkçe olarak tanımla
+    const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+
+    meals.forEach(meal => {
+        const date = new Date(meal.date);
+        const dayName = days[date.getDay()];
+        const formattedDate = date.toLocaleDateString('tr-TR');
+
+        html += `
+            <div class="menu-day-card">
+                <h3>${dayName} <span class="date">${formattedDate}</span></h3>
+                
+                <div class="menu-item">
+                    <h5>${meal.mealName.corba.name}</h5>
+                    <span class="cal">${meal.mealName.corba.calories} Kalori</span>
+                    
+                </div>
+
+                <div class="menu-item">
+                    <h5>${meal.mealName.anaYemek.name}</h5>
+                    <span class="cal">${meal.mealName.anaYemek.calories} Kalori</span>
+                    
+                </div>
+
+                <div class="menu-item">
+                    <h5>${meal.mealName.pilav.name}</h5>
+                    <span class="cal">${meal.mealName.pilav.calories} Kalori</span>
+                    
+                </div>
+
+                <div class="menu-item">
+                    <h5>${meal.mealName.tatli.name}</h5>
+                    <span class="cal">${meal.mealName.tatli.calories} Kalori</span>
+                    
+                </div>
+
+                <div class="total-cal">Toplam: ${meal.totalCalories} Kalori</div>
+            </div>
+        `;
+    });
+
+    weekMenuContent.innerHTML = html;
+}
+
+
+
+function showError(message) {
+    const weekMenuContent = document.getElementById('weekMenuContent');
+    weekMenuContent.innerHTML = `
+        <div class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>${message}
+        </div>
+    `;
+}
+</script>
+
+<style>
+.menu-week-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.menu-day-card {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s;
+}
+
+.menu-day-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.menu-day-card h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-day-card .date {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: normal;
+}
+
+.menu-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.menu-item h5 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.3rem;
+}
+
+.cal {
+    font-family: 'Roboto', sans-serif;
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.rating .fa-star {
+    color: #ffc107;
+}
+
+.total-cal {
+    text-align: right;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.alert {
+    border-radius: 10px;
+    font-family: 'Roboto', sans-serif;
+}
+</style>

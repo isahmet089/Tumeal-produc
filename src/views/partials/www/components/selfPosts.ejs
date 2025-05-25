@@ -1,0 +1,92 @@
+<div id="selfPostsContainer">
+  <!-- Kullanıcının postları buraya dinamik olarak eklenecek -->
+</div>
+
+<script>
+async function loadSelfPosts() {
+  const postsContainer = document.getElementById('selfPostsContainer');
+  if (!postsContainer) return;
+
+  try {
+    const response = await fetch('/get-self-posts', { cache: "no-store" });
+    if (!response.ok) throw new Error('Postlar yüklenemedi');
+    const posts = await response.json();
+
+    postsContainer.innerHTML = '';
+
+    if (!posts || posts.length === 0) {
+      postsContainer.innerHTML = `
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle me-2"></i>
+          Henüz post paylaşmadınız.
+        </div>
+      `;
+      return;
+    }
+
+    posts.forEach(post => {
+      if (!post || !post.user) return;
+      const postDiv = document.createElement('div');
+      postDiv.className = 'comment-card';
+      postDiv.innerHTML = `
+        <div class="comment-header">
+          <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(post.user.firstName)}+${encodeURIComponent(post.user.lastName)}&background=ececec&color=2c3e50" class="comment-avatar" alt="${post.user.firstName} ${post.user.lastName}">
+          <span class="comment-name">${post.user.firstName} ${post.user.lastName}</span>
+          <span class="comment-date">${formatTime(post.createdAt)}</span>
+          <div class="post-actions ms-auto">
+            <button class="btn btn-sm btn-outline-danger delete-post" data-post-id="${post._id}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+        <p class="comment-text mt-3">${post.content || ''}</p>
+        <div class="post-stats mt-3">
+          <span class="me-3">
+            <i class="fa-regular fa-heart"></i> 
+            ${post.likes ? post.likes.length : 0} beğeni
+          </span>
+          <span>
+            <i class="fa-regular fa-comment"></i> 
+            ${post.comments ? post.comments.length : 0} yorum
+          </span>
+        </div>
+      `;
+      // Silme butonu event
+      postDiv.querySelector('.delete-post').addEventListener('click', () => handleDeletePost(post._id));
+      postsContainer.appendChild(postDiv);
+    });
+  } catch (error) {
+    postsContainer.innerHTML = `
+      <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        Postlar yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.
+      </div>
+    `;
+  }
+}
+
+async function handleDeletePost(postId) {
+  if (!confirm('Bu postu silmek istediğinizden emin misiniz?')) return;
+  try {
+    const response = await fetch(`/delete-post/${postId}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error('Post silinemedi');
+    loadSelfPosts();
+  } catch (error) {
+    alert('Post silinirken hata oluştu.');
+  }
+}
+
+function formatTime(date) {
+  const now = new Date();
+  const postDate = new Date(date);
+  const diff = now - postDate;
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  if (minutes < 60) return `${minutes} dakika önce`;
+  if (hours < 24) return `${hours} saat önce`;
+  return `${days} gün önce`;
+}
+
+document.addEventListener('DOMContentLoaded', loadSelfPosts);
+</script>

@@ -1,0 +1,259 @@
+<div class="menu-card" id="todayMenu">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0 fw-bold" style="font-family: 'Poppins', sans-serif; color: #2c3e50;">Bugünkü Menü</h2>
+        <span class="badge bg-primary" id="menuDate" style="font-family: 'Roboto', sans-serif; font-size: 0.9rem;"></span>
+    </div>
+    
+    <div id="menuContent">
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.menu-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item h5 {
+    margin: 0;
+    color: #2c3e50;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+}
+
+.cal {
+    background: #e9ecef;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-family: 'Roboto', sans-serif;
+}
+
+.favorite-btn {
+    transition: all 0.3s ease;
+    border: 2px solid #dc3545;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    background-color: transparent;
+    color: #dc3545;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.05);
+    background-color: #dc3545;
+    color: white;
+}
+
+.favorite-btn i {
+    transition: all 0.3s ease;
+}
+
+.favorite-btn.active {
+    background-color: #dc3545;
+    color: white;
+}
+
+.favorite-btn.active:hover {
+    background-color: #c82333;
+}
+</style>
+
+<script>
+// Sayfa yüklendiğinde menüyü getir
+document.addEventListener('DOMContentLoaded', loadTodayMenu);
+
+// Menüyü yükle
+function loadTodayMenu() {
+    const menuContent = document.getElementById('menuContent');
+    
+    // Yükleme göstergesi
+    menuContent.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+        </div>
+    `;
+
+    // Menüyü getir
+    fetch('/mealDay')
+        .then(response => response.json())
+        .then(meal => {
+            console.log('Backend yanıtı:', meal); // Debug için
+            if (meal.error) {
+                showError(meal.error);
+                return;
+            }
+            renderMenu(meal);
+        })
+        .catch(error => {
+            console.error('Hata:', error);
+            showError('Menü yüklenirken bir hata oluştu');
+        });
+}
+
+// Menüyü göster
+function renderMenu(meal) {
+    const menuDate = document.getElementById('menuDate');
+    const menuContent = document.getElementById('menuContent');
+    
+    // Tarihi formatla
+   /* const date = new Date(meal.date);
+    menuDate.textContent = date.toLocaleDateString('tr-TR', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    }); */
+
+    // Favori durumunu kontrol et
+    const isFavorite = Boolean(meal.isFavorite);
+    console.log('Favori durumu:', isFavorite); // Debug için
+
+    // Menü HTML'ini oluştur
+    let html = `
+        <div class="menu-item">
+            <h5>${meal.mealName.corba.name}</h5>
+            <span class="cal">${meal.mealName.corba.calories} Kalori</span>
+        </div>
+
+        <div class="menu-item">
+            <h5>${meal.mealName.anaYemek.name}</h5>
+            <span class="cal">${meal.mealName.anaYemek.calories} Kalori</span>
+        </div>
+
+        <div class="menu-item">
+            <h5>${meal.mealName.pilav.name}</h5>
+            <span class="cal">${meal.mealName.pilav.calories} Kalori</span>
+        </div>
+    `;
+
+    if (meal.mealName.tatli && meal.mealName.tatli.name) {
+        html += `
+            <div class="menu-item">
+                <h5>${meal.mealName.tatli.name}</h5>
+                <span class="cal">${meal.mealName.tatli.calories} Kalori</span>
+            </div>
+        `;
+    }
+
+    html += `
+        <div class="text-end mt-4">
+            <span class="fw-bold" style="color: #2c3e50; font-family: 'Poppins', sans-serif;">
+                Toplam: ${meal.totalCalories} Kalori
+            </span>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4">
+            <% if (locals.user) { %>
+                <button class="btn favorite-btn ${isFavorite ? 'active' : ''}" 
+                        data-meal-id="${meal._id}" 
+                        data-is-favorite="${isFavorite}">
+                    <i class="${isFavorite ? 'fa-solid' : 'fa-regular'} fa-heart me-1"></i>
+                    ${isFavorite ? 'Favorilerden Çıkar' : 'Favorilere Ekle'}
+                </button>
+            <% } else { %>
+                <a href="/login" class="btn favorite-btn">
+                    <i class="fa-regular fa-heart me-1"></i>
+                    Favorilere Eklemek İçin Giriş Yapın
+                </a>
+            <% } %>
+        </div>
+    `;
+
+    menuContent.innerHTML = html;
+    initializeFavoriteHandlers();
+}
+
+// Hata mesajını göster
+function showError(message) {
+    const menuContent = document.getElementById('menuContent');
+    menuContent.innerHTML = `
+        <div class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>${message}
+        </div>
+    `;
+}
+
+// Favori butonlarını aktifleştir
+function initializeFavoriteHandlers() {
+    document.querySelectorAll('.favorite-btn').forEach(button => {
+        if (button.dataset.mealId) { // Sadece favori butonları için
+            button.addEventListener('click', function() {
+                const mealId = this.dataset.mealId;
+                const isFavorite = this.dataset.isFavorite === 'true';
+                toggleFavorite(mealId, isFavorite, this);
+            });
+        }
+    });
+}
+
+// Favori durumunu değiştir
+function toggleFavorite(mealId, isFavorite, button) {
+    // Butonu devre dışı bırak
+    button.disabled = true;
+    const originalContent = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>İşleniyor...';
+
+    // Favori durumunu değiştir
+    fetch('/toggle-favorite', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ mealId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Toggle yanıtı:', data); // Debug için
+        
+        if (data.error) {
+            showError(data.error);
+            button.innerHTML = originalContent;
+            button.disabled = false;
+            return;
+        }
+
+        // Buton görünümünü güncelle
+        const newIsFavorite = Boolean(data.isFavorite);
+        button.dataset.isFavorite = newIsFavorite;
+        
+        if (newIsFavorite) {
+            button.innerHTML = `<i class="fa-solid fa-heart me-1"></i>Favorilerden Çıkar`;
+            button.classList.add('active');
+        } else {
+            button.innerHTML = `<i class="fa-regular fa-heart me-1"></i>Favorilere Ekle`;
+            button.classList.remove('active');
+        }
+        
+        button.disabled = false;
+    })
+    .catch(error => {
+        console.error('Hata:', error);
+        showError('Favori işlemi sırasında bir hata oluştu');
+        button.innerHTML = originalContent;
+        button.disabled = false;
+    });
+}
+</script>

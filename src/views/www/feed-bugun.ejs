@@ -3,31 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tartışmalar | TuMeal</title>
+    <title>Bugünkü Yemek Yorumları | TuMeal</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <!-- Animate.css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
-    <% if (locals.user) { %>
-        <script>
-            window.currentUser = {
-                id: '<%= user._id %>',
-                isAuthenticated: true
-            };
-        </script>
-    <% } else { %>
-        <script>
-            window.currentUser = {
-                isAuthenticated: false
-            };
-        </script>
-    <% } %>
+    <link rel="stylesheet" href="/styles.css">
     <style>
         body {
             background: #f6f8fa;
@@ -43,12 +26,88 @@
             color: #ff6b35;
             margin-right: 8px;
         }
-        .sidebar-card {
+        .page-header {
             background: #fff;
             border-radius: 18px;
             box-shadow: 0 4px 24px rgba(44,62,80,0.08);
-            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .page-header h1 {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .filter-buttons {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn-group {
+            gap: 0.5rem;
+        }
+        .btn-group .btn {
+            border-radius: 8px !important;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-outline-orange {
+            color: #ff6b35;
+            border-color: #ff6b35;
+            background: transparent;
+            transition: all 0.2s;
+        }
+        .btn-outline-orange:hover,
+        .btn-outline-orange.active {
+            color: #fff;
+            background: #ff6b35;
+            border-color: #ff6b35;
+        }
+        .feed-main {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .topics-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+            padding: 1.5rem 1.5rem 1rem 1.5rem;
             margin-bottom: 2rem;
+        }
+        .topic-title {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            transition: color 0.2s;
+        }
+        .topic-title:hover {
+            color: #ff6b35;
+        }
+        .topic-meta {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .stats-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .stats-item:last-child {
+            border-bottom: none;
+        }
+        .stats-title {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+        .stats-value {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            font-weight: 600;
         }
         .profile-mini {
             text-align: center;
@@ -84,91 +143,12 @@
         .quick-links a:hover {
             color: #ff6b35;
         }
-        .feed-main {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .create-post-card {
+        .sidebar-card {
             background: #fff;
             border-radius: 18px;
             box-shadow: 0 4px 24px rgba(44,62,80,0.08);
-            padding: 1.5rem 1.5rem 1rem 1.5rem;
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
             margin-bottom: 2rem;
-        }
-        .create-post-card textarea {
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-            padding: 1rem;
-            font-size: 1.1rem;
-            min-height: 60px;
-            resize: vertical;
-            margin-bottom: 0.5rem;
-        }
-        .create-post-card .btn-orange {
-            background: #ff6b35;
-            color: #fff;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            padding: 8px 24px;
-            border: none;
-            transition: background 0.2s;
-        }
-        .create-post-card .btn-orange:hover {
-            background: #e55d2a;
-            color: #fff;
-        }
-        .post-card {
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 4px 24px rgba(44,62,80,0.08);
-            padding: 1.2rem 1.5rem 1rem 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .post-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.3rem;
-        }
-        .post-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 1rem;
-        }
-        .post-name {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-right: 0.5rem;
-        }
-        .post-time {
-            color: #7f8c8d;
-            font-size: 0.95rem;
-        }
-        .post-content {
-            color: #2c3e50;
-            font-size: 1.1rem;
-            margin-bottom: 0.7rem;
-            margin-top: 0.2rem;
-        }
-        .post-actions {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 0.5rem;
-        }
-        .post-action {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-            text-decoration: none;
-            transition: color 0.2s;
-            cursor: pointer;
-        }
-        .post-action:hover {
-            color: #ff6b35;
-        }
-        .post-action i {
-            margin-right: 4px;
         }
         .comments-thread { margin-left: 3.2rem; margin-top: 0.5rem; border-left: 2px solid #f0f0f0; padding-left: 1.2rem; }
         .comment-reply { display: flex; align-items: flex-start; margin-bottom: 1rem; }
@@ -183,131 +163,26 @@
             padding: 1.5rem 1.5rem 1rem 1.5rem;
             margin-bottom: 2rem;
         }
-        .topic-title {
-            color: #2c3e50;
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-        }
-        .topic-meta {
-            color: #7f8c8d;
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
-        }
-        .footer {
-            background: #2c3e50;
-            color: #fff;
-            padding: 2rem 0 1rem 0;
-            text-align: center;
-            margin-top: 3rem;
-        }
-        .footer a {
-            color: #ff6b35;
-            margin: 0 8px;
-            font-size: 1.2rem;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            color: #fff;
-        }
-        /* Reply Modal Styles */
-        .reply-modal .modal-content {
-            border-radius: 18px;
-            border: none;
-        }
-        .reply-modal .modal-header {
-            border-bottom: 1px solid #f0f0f0;
-            padding: 1rem 1.5rem;
-        }
-        .reply-modal .modal-body {
-            padding: 1.5rem;
-        }
-        .reply-modal .modal-footer {
-            border-top: 1px solid #f0f0f0;
-            padding: 1rem 1.5rem;
-        }
-        .reply-modal textarea {
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-            padding: 1rem;
-            font-size: 1.1rem;
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        /* Inline Reply Styles */
-        .inline-reply {
-            display: none;
-            margin-top: 1rem;
-            margin-left: 3.2rem;
-            animation: fadeIn 0.2s ease-in-out;
-        }
-        .inline-reply.active {
-            display: block;
-        }
-        .inline-reply textarea {
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-            padding: 0.8rem;
-            font-size: 1rem;
-            min-height: 60px;
-            resize: vertical;
-            margin-bottom: 0.5rem;
-            transition: border-color 0.2s;
-        }
-        .inline-reply textarea:focus {
-            border-color: #ff6b35;
-            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.1);
-        }
-        .inline-reply .btn-orange {
-            background: #ff6b35;
-            color: #fff;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 1rem;
-            padding: 6px 20px;
-            border: none;
-            transition: all 0.2s;
-        }
-        .inline-reply .btn-orange:hover {
-            background: #e55d2a;
-            color: #fff;
-            transform: translateY(-1px);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .btn-orange {
-            background: #ff6b35;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            
-            margin-top: 1rem;
-            transition: background 0.2s;
-            color: #fff;
-        }
-        .btn-orange:hover {
-            background: #e55d2a;
-            color: #fff;
-        }
-        .stats-title {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            margin-bottom: 0.4rem;
-        }
-        .stats-value {
-            color: #2c3e50;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
     </style>
+    <% if (locals.user) { %>
+        <script>
+            window.currentUser = {
+                id: '<%= user._id %>',
+                isAuthenticated: true
+            };
+        </script>
+    <% } else { %>
+        <script>
+            window.currentUser = {
+                isAuthenticated: false
+            };
+        </script>
+    <% } %>
 </head>
 <body>
     <%- include('../partials/www/common/navbar') %>
     <div class="container mt-4 mb-4">
         <div class="row justify-content-center">
-            
             <!-- Left Sidebar -->
             <div class="col-lg-3 d-none d-lg-block">
                 <div class="sidebar-card">
@@ -346,16 +221,34 @@
                     <img src="/banner3.png" alt="Banner" class="img-fluid rounded-4 shadow" />
                 </div>
                 <div class="banner-under-cards mt-4">
-                    <img src="/banner5.png" alt="Banner" class="img-fluid rounded-4 shadow" />
+                    <img src="/banner4.png" alt="Banner" class="img-fluid rounded-4 shadow" />
                 </div>
+                
             </div>
             <!-- Feed Main -->
             <div class="col-lg-6 feed-main">
+                <div class="page-header mb-4">
+                    <h1 class="h3 mb-2">Bugünkü Yemek Yorumları</h1>
+                    <p class="text-muted">Yemekhane, menü ve günlük yemekler hakkında yorumlar</p>
+                </div>
+                <div class="filter-buttons mb-4">
+                    <div class="btn-group w-100">
+                        <button class="btn btn-outline-orange active" data-filter="all">
+                            <i class="fas fa-th-large me-2"></i>Tümü
+                        </button>
+                        <button class="btn btn-outline-orange" data-filter="yemekhane">
+                            <i class="fas fa-utensils me-2"></i>#yemekhane
+                        </button>
+                        <button class="btn btn-outline-orange" data-filter="menu">
+                            <i class="fas fa-clipboard-list me-2"></i>#menu
+                        </button>
+                        <button class="btn btn-outline-orange" data-filter="bugun">
+                            <i class="fas fa-calendar-day me-2"></i>#bugun
+                        </button>
+                    </div>
+                </div>
                 <%- include('../partials/www/components/createPostNew') %>
-                <%#- include('../partials/www/components/createPost') %> <!-- Bu kısımı kaldırıyoruz -->
-                
                 <%- include('../partials/www/components/getPost') %>
-                
             </div>
             <!-- Right Sidebar -->
             <div class="col-lg-3 d-none d-lg-block">
@@ -394,28 +287,14 @@
                         <div class="stats-value">74</div>
                     </div>
                     <div class="stats-item">
-                        <div class="stats-title mt-2">Aktif Kullanıcı</div>
+                        <div class="stats-title">Aktif Kullanıcı</div>
                         <div class="stats-value">28</div>
                     </div>
                     <div class="stats-item">
-                        <div class="stats-title mt-2">Beğeni Sayısı</div>
+                        <div class="stats-title">Beğeni Sayısı</div>
                         <div class="stats-value">156</div>
                     </div>
                 </div>
-                <style>
-                   .banner-under-cards img {
-    width: 100%;
-    max-width: 300px;
-    display: block;
-    margin: 0 auto;
-    border-radius: 24px;
-    box-shadow: 0 4px 24px rgba(44,62,80,0.08);
-}
-@media (max-width: 1200px) {
-    .banner-under-cards { display: none; }
-}
-
-                </style>
                 <div class="banner-under-cards mt-4">
                     <img src="/banner2.png" alt="Banner" class="img-fluid rounded-4 shadow" />
                 </div>
@@ -423,52 +302,55 @@
                     <img src="/banner3.png" alt="Banner" class="img-fluid rounded-4 shadow" />
                 </div>
                 <div class="banner-under-cards mt-4">
-                    <img src="/banner4.png" alt="Banner" class="img-fluid rounded-4 shadow" />
+                    <img src="/banner5.png" alt="Banner" class="img-fluid rounded-4 shadow" />
                 </div>
+            </div>
             </div>
         </div>
     </div>
-   <%- include('../partials/www/common/footer') %>
-
+    <%- include('../partials/www/common/footer') %>
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Enhanced inline reply functionality
-        document.querySelectorAll('.reply-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const post = this.closest('.post-card');
-                const inlineReply = post.querySelector('.inline-reply');
-                const textarea = inlineReply.querySelector('textarea');
-                
-                // Toggle reply form
-                inlineReply.classList.toggle('active');
-                
-                // Focus textarea when shown
-                if (inlineReply.classList.contains('active')) {
-                    setTimeout(() => textarea.focus(), 100);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filtreleme işlemi
+            const filterButtons = document.querySelectorAll('.filter-buttons .btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Aktif buton stilini güncelle
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    filterPosts(filter);
+                    // URL'yi güncelle
+                    const url = new URL(window.location);
+                    url.searchParams.set('filter', filter);
+                    window.history.pushState({}, '', url);
+                });
+            });
+            // URL'den filtre parametresini al
+            const urlParams = new URLSearchParams(window.location.search);
+            const filterParam = urlParams.get('filter');
+            if (filterParam) {
+                const filterButton = document.querySelector(`[data-filter="${filterParam}"]`);
+                if (filterButton) {
+                    filterButton.click();
+                }
+            }
+        });
+        // Postları filtrele
+        function filterPosts(filter) {
+            const posts = document.querySelectorAll('.post-card');
+            posts.forEach(post => {
+                if (filter === 'all') {
+                    post.style.display = 'block';
+                } else {
+                    const content = post.querySelector('.post-content').textContent;
+                    const hasKeyword = content.includes(`#${filter}`);
+                    post.style.display = hasKeyword ? 'block' : 'none';
                 }
             });
-        });
-
-        // Character counter for reply textarea
-        document.querySelectorAll('.inline-reply textarea').forEach(textarea => {
-            textarea.addEventListener('input', function() {
-                const maxLength = 180;
-                const currentLength = this.value.length;
-                const counter = this.closest('.inline-reply').querySelector('small');
-                
-                if (counter) {
-                    counter.textContent = `${currentLength}/${maxLength} karakter`;
-                    
-                    // Change color when approaching limit
-                    if (currentLength > maxLength * 0.8) {
-                        counter.style.color = '#ff6b35';
-                    } else {
-                        counter.style.color = '#6c757d';
-                    }
-                }
-            });
-        });
+        }
     </script>
 </body>
-</html> 
+</html>
