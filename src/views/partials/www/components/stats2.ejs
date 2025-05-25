@@ -1,0 +1,32 @@
+<div class="topics-card mt-4">
+    <h5 class="fw-bold mb-3" style="color:#2c3e50;">
+        <i class="fas fa-chart-bar me-2"></i>Günün İstatistikleri
+    </h5>
+    <div class="stats-item">
+        <div class="stats-title">Toplam Yorum</div>
+        <div class="stats-value" id="totalComments">-</div>
+    </div>
+    <div class="stats-item">
+        <div class="stats-title mt-2">Aktif Kullanıcı</div>
+        <div class="stats-value" id="activeUsers">-</div>
+    </div>
+    <div class="stats-item">
+        <div class="stats-title mt-2">Beğeni Sayısı</div>
+        <div class="stats-value" id="totalLikes">-</div>
+    </div>
+</div>
+<script>
+    async function fetchStats2() {
+        try {
+            const res = await fetch('/stats2');
+            const data = await res.json();
+            document.getElementById('totalComments').textContent = data.totalComments;
+            document.getElementById('activeUsers').textContent = data.activeUsers;
+            document.getElementById('totalLikes').textContent = data.totalLikes;
+        } catch (e) {
+            // Hata durumunda boş bırak
+        }
+    }
+    fetchStats2();
+    setInterval(fetchStats2, 6000); // Her dakika güncelle
+</script>

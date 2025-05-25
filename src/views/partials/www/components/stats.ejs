@@ -1,0 +1,46 @@
+<div class="row mb-4" id="statsRow">
+    <div class="col-md-3">
+        <div class="stats-card">
+            <i class="fas fa-comments"></i>
+            <h3 id="dailyComments">-</h3>
+            <p class="text-muted">Günlük Yorum</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <i class="fas fa-users"></i>
+            <h3 id="totalUsers">-</h3>
+            <p class="text-muted">Toplam Kullanıcı</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <i class="fas fa-bolt"></i>
+            <h3 id="totalInteractions">-</h3>
+            <p class="text-muted">Toplam Etkileşim</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card">
+            <i class="fas fa-user-clock"></i>
+            <h3 id="activeUsers">-</h3>
+            <p class="text-muted">Şu An Aktif</p>
+        </div>
+    </div>
+</div>
+<script>
+    async function fetchStats() {
+        try {
+            const res = await fetch('/stats');
+            const data = await res.json();
+            document.getElementById('dailyComments').textContent = data.dailyComments;
+            document.getElementById('totalUsers').textContent = data.totalUsers;
+            document.getElementById('totalInteractions').textContent = data.totalInteractions;
+            document.getElementById('activeUsers').textContent = data.activeUsers;
+        } catch (e) {
+            // Hata durumunda boş bırak
+        }
+    }
+    fetchStats();
+    setInterval(fetchStats, 60000); // Her dakika güncelle
+</script>

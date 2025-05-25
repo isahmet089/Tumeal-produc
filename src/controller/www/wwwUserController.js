@@ -376,6 +376,63 @@ const getUser = async (req, res) => {
         res.status(500).render('error', { message: 'Bir hata oluştu' });
     }
 };
+const getStats = async (req, res) => {
+    try {
+        // Bugünün başlangıcı
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Bugünkü post ve yorum sayısı
+        const dailyPosts = await Post.countDocuments({ createdAt: { $gte: today } });
+        const dailyComments = await Comment.countDocuments({ createdAt: { $gte: today } });
+
+        // Toplam kullanıcı
+        const totalUsers = await User.countDocuments();
+
+        // Toplam etkileşim (tüm beğeni + tüm yorum)
+        const totalComments = await Comment.countDocuments();
+        const posts = await Post.find({}, 'likes');
+        const totalLikes = posts.reduce((sum, post) => sum + (post.likes ? post.likes.length : 0), 0);
+        const totalInteractions = totalComments + totalLikes;
+
+        // Şu an aktif kullanıcı (son 15 dakika)
+        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+        const activeUsers = await User.countDocuments({ lastActiveAt: { $gte: fifteenMinutesAgo } });
+
+        // JSON döndür (AJAX için)
+        res.json({
+            dailyPosts,
+            dailyComments,
+            totalUsers,
+            totalInteractions,
+            activeUsers
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'İstatistikler alınamadı' });
+    }
+};
+const getStats2 = async (req, res) => {
+    try {
+        // Toplam yorum
+        const totalComments = await Comment.countDocuments();
+
+        // Aktif kullanıcı (son 15 dakika)
+        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+        const activeUsers = await User.countDocuments({ lastActiveAt: { $gte: fifteenMinutesAgo } });
+
+        // Toplam beğeni
+        const posts = await Post.find({}, 'likes');
+        const totalLikes = posts.reduce((sum, post) => sum + (post.likes ? post.likes.length : 0), 0);
+
+        res.json({
+            totalComments,
+            activeUsers,
+            totalLikes
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'İstatistikler alınamadı' });
+    }
+};
 
 module.exports = {
     toggleFavorite,
@@ -392,6 +449,8 @@ module.exports = {
     deleteComment,
     showNotification,
     getFeedBugun,
-    getUser
+    getUser,
+    getStats,
+    getStats2
 
 };

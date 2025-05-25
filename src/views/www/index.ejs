@@ -185,36 +185,8 @@
         </div>
 
         <!-- Stats Section -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="stats-card">
-                    <i class="fas fa-utensils"></i>
-                    <h3>1,234</h3>
-                    <p class="text-muted">Günlük Yemek</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stats-card">
-                    <i class="fas fa-users"></i>
-                    <h3>5,678</h3>
-                    <p class="text-muted">Aktif Kullanıcı</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stats-card">
-                    <i class="fas fa-star"></i>
-                    <h3>4.8</h3>
-                    <p class="text-muted">Ortalama Puan</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stats-card">
-                    <i class="fas fa-comments"></i>
-                    <h3>890</h3>
-                    <p class="text-muted">Günlük Yorum</p>
-                </div>
-            </div>
-        </div>
+         <%- include('../partials/www/components/stats') %>
+        
 
         <div class="row">
             <div class="col-lg-8">
@@ -264,27 +236,29 @@
                 <!-- Quick Links -->
                 <div class="quick-links mb-4">
                     <h3 class="mb-4"><i class="fas fa-bolt me-2"></i>Hızlı Erişim</h3>
-                    <a href="menu.html" class="quick-link-item">
+                    <a href="/menu" class="quick-link-item">
                         <i class="fas fa-calendar-days"></i>
                         <div>
                             <h5 class="mb-1">Haftalık Menü</h5>
                             <small class="text-muted">Tüm haftanın menüsünü görüntüle</small>
                         </div>
                     </a>
-                    <a href="feed.html" class="quick-link-item">
+                    <a href="/feed" class="quick-link-item">
                         <i class="fas fa-comments"></i>
                         <div>
                             <h5 class="mb-1">Yemek Tartış</h5>
                             <small class="text-muted">Diğer öğrencilerle yorum yap</small>
                         </div>
                     </a>
-                    <a href="profile.html" class="quick-link-item">
+                    <% if (locals.user) { %>
+                    <a href="/profile" class="quick-link-item">
                         <i class="fas fa-user"></i>
                         <div>
                             <h5 class="mb-1">Profilim</h5>
                             <small class="text-muted">Hesap ayarlarını yönet</small>
                         </div>
-                    </a>
+                        </a>
+                    <% } %>
                 </div>
 
                 <!-- Daily Poll -->

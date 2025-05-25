@@ -85,5 +85,8 @@ router.get('/feed-bugun', WWWUserController.getFeedBugun);
 // Test sayfası
 router.get('/user/:id', WWWUserController.getUser);
 
+// İstatistikleri getir
+router.get('/stats', WWWUserController.getStats);
+router.get('/stats2', WWWUserController.getStats2);
 
 module.exports = router;

@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const flash = require('connect-flash');
 const userLocals = require("./middleware/userLocalsAuth");
 const logMiddleware = require("./middleware/log");
+const updateLastActive = require('./middleware/updateLastActive');
 
 // Middleware
 app.use(cookieParser());
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan("dev"));
+app.use(updateLastActive);
 app.use(userLocals);
 app.use(logMiddleware);
 // flash messages

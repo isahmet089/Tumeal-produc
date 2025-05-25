@@ -45,7 +45,8 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
-    }
+    },
+    lastActiveAt: { type: Date, default: Date.now }
 }, {
     timestamps: true // createdAt ve updatedAt alanlarını otomatik ekler
 });
