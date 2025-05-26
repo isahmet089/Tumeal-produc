@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Kullanıcı Logları</title>
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <%- include('../partials/dashboard/common/css')  %>
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <style>
+        .log-status-2 { color: #1cc88a; font-weight: bold; } /* 2xx */
+        .log-status-4 { color: #f6c23e; font-weight: bold; } /* 4xx */
+        .log-status-5 { color: #e74a3b; font-weight: bold; } /* 5xx */
+        .log-status-other { color: #858796; }
+        .table td, .table th { vertical-align: middle !important; }
+    </style>
+</head>
+<body id="page-top">
+    <div id="wrapper">
+        <%- include('../partials/dashboard/common/header-nav')  %>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Kullanıcı Logları</h1>
+                    </div>
+                    <!-- Özet Kutuları -->
+                    <div class="row mb-4">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Toplam Log</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= stats.total %></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Başarılı (2xx)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= stats.success %></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-check fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Uyarı (4xx)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= stats.warning %></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-danger shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Hata (5xx)</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= stats.error %></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-times fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Log Tablosu -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Log Listesi</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="logTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Tarih</th>
+                                            <th>Kullanıcı</th>
+                                            <th>IP</th>
+                                            <th>Yöntem</th>
+                                            <th>URL</th>
+                                            <th>Durum</th>
+                                            <th>İşlem</th>
+                                            <th>Detay</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% logs.forEach(log => { %>
+                                            <tr>
+                                                <td><%= new Date(log.createdAt).toLocaleString() %></td>
+                                                <td>
+                                                    <%= log.user ? `${log.user.firstName} ${log.user.lastName}` : 'Silinmiş Kullanıcı' %>
+                                                </td>
+                                                <td><%= log.ip %></td>
+                                                <td><span class="badge badge-info"><%= log.method %></span></td>
+                                                <td><%= log.url %></td>
+                                                <td>
+                                                    <% if (log.status >= 200 && log.status < 300) { %>
+                                                        <span class="log-status-2"><%= log.status %></span>
+                                                    <% } else if (log.status >= 400 && log.status < 500) { %>
+                                                        <span class="log-status-4"><%= log.status %></span>
+                                                    <% } else if (log.status >= 500) { %>
+                                                        <span class="log-status-5"><%= log.status %></span>
+                                                    <% } else { %>
+                                                        <span class="log-status-other"><%= log.status %></span>
+                                                    <% } %>
+                                                </td>
+                                                <td><%= log.action %></td>
+                                                <td>
+                                                    <button class="btn btn-info btn-sm view-log" data-id="<%= log._id %>">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Detay Modal -->
+    <div class="modal fade" id="logDetailModal" tabindex="-1" role="dialog" aria-labelledby="logDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logDetailModalLabel">Log Detayı</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Kullanıcı</dt>
+                        <dd class="col-sm-9" id="detailUser"></dd>
+                        <dt class="col-sm-3">Tarih</dt>
+                        <dd class="col-sm-9" id="detailDate"></dd>
+                        <dt class="col-sm-3">IP</dt>
+                        <dd class="col-sm-9" id="detailIp"></dd>
+                        <dt class="col-sm-3">Yöntem</dt>
+                        <dd class="col-sm-9" id="detailMethod"></dd>
+                        <dt class="col-sm-3">URL</dt>
+                        <dd class="col-sm-9" id="detailUrl"></dd>
+                        <dt class="col-sm-3">Durum</dt>
+                        <dd class="col-sm-9" id="detailStatus"></dd>
+                        <dt class="col-sm-3">User Agent</dt>
+                        <dd class="col-sm-9" id="detailUserAgent"></dd>
+                        <dt class="col-sm-3">İşlem</dt>
+                        <dd class="col-sm-9" id="detailAction"></dd>
+                        <dt class="col-sm-3">Detay</dt>
+                        <dd class="col-sm-9" id="detailDetails"></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/dashboard/common/footer')  %>
+    <%- include('../partials/dashboard/common/script')  %>
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#logTable').DataTable({
+                order: [[0, 'desc']],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json'
+                },
+                responsive: true,
+                pageLength: 25
+            });
+
+            // Log detay modalı
+            $('.view-log').on('click', function() {
+                const logId = $(this).data('id');
+                $.ajax({
+                    url: `/dashboard/log/${logId}`,
+                    method: 'GET',
+                    success: function(log) {
+                        $('#detailUser').text(log.user ? `${log.user.firstName} ${log.user.lastName}` : 'Silinmiş Kullanıcı');
+                        $('#detailDate').text(new Date(log.createdAt).toLocaleString());
+                        $('#detailIp').text(log.ip);
+                        $('#detailMethod').text(log.method);
+                        $('#detailUrl').text(log.url);
+                        $('#detailStatus').text(log.status);
+                        $('#detailUserAgent').text(log.userAgent);
+                        $('#detailAction').text(log.action);
+                        $('#detailDetails').text(log.details || '-');
+                        $('#logDetailModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        alert('Log detayı alınamadı');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

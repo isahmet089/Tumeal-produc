@@ -89,4 +89,7 @@ router.get('/user/:id', WWWUserController.getUser);
 router.get('/stats', WWWUserController.getStats);
 router.get('/stats2', WWWUserController.getStats2);
 
+router.get('/notifications/app', WWWUserController.getAppNotifications);
+router.get('/notifications/meal', WWWUserController.getMealNotifications);
+
 module.exports = router;

@@ -1,0 +1,298 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Kullanıcı Yönetimi</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+     
+    <!-- css -->
+    <%- include('../partials/dashboard/common/css')  %>
+    <!-- Custom styles for this page -->
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- header ve nav dosyam-->
+        <%- include('../partials/dashboard/common/header-nav')  %>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Kullanıcı Yönetimi</h1>
+                        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#addUserModal">
+                            <i class="fas fa-user-plus fa-sm text-white-50"></i> Yeni Kullanıcı Ekle
+                        </button>
+                    </div>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Kullanıcı Listesi</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Ad</th>
+                                            <th>Soyad</th>
+                                            <th>Öğrenci No</th>
+                                            <th>Email</th>
+                                            <th>Rol</th>
+                                            <th>Durum</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% users.forEach(user => { %>
+                                            <tr>
+                                                <td><%= user._id %></td>
+                                                <td><%= user.firstName %></td>
+                                                <td><%= user.lastName %></td>
+                                                <td><%= user.studentId %></td>
+                                                <td><%= user.email %></td>
+                                                <td><%= user.role %></td>
+                                                <td>
+                                                    <span class="badge badge-<%= user.isVerified ? 'success' : 'warning' %>">
+                                                        <%= user.isVerified ? 'Onaylı' : 'Onay Bekliyor' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-sm edit-user" data-id="<%= user._id %>">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm delete-user" data-id="<%= user._id %>">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Yeni Kullanıcı Ekle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="addUserForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="firstName">Ad</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Soyad</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentId">Öğrenci No</label>
+                            <input type="text" class="form-control" id="studentId" name="studentId" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Şifre</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Rol</label>
+                            <select class="form-control" id="role" name="role">
+                                <option value="student">Öğrenci</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Kullanıcı Düzenle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="editFirstName">Ad</label>
+                            <input type="text" class="form-control" id="editFirstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editLastName">Soyad</label>
+                            <input type="text" class="form-control" id="editLastName" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStudentId">Öğrenci No</label>
+                            <input type="text" class="form-control" id="editStudentId" name="studentId" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" class="form-control" id="editEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editRole">Rol</label>
+                            <select class="form-control" id="editRole" name="role">
+                                <option value="student">Öğrenci</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editIsVerified">Durum</label>
+                            <select class="form-control" id="editIsVerified" name="isVerified">
+                                <option value="true">Onaylı</option>
+                                <option value="false">Onay Bekliyor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-primary">Güncelle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/dashboard/common/footer')  %>
+    <%- include('../partials/dashboard/common/script')  %>
+    
+    <!-- Page level plugins -->
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="/js/demo/datatables-demo.js"></script>
+
+    <!-- Custom scripts for user management -->
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#dataTable').DataTable();
+    
+            // Add User Form Submit
+            $('#addUserForm').on('submit', function(e) {
+                e.preventDefault();
+                const formData = $(this).serialize();
+                
+                $.ajax({
+                    url: '/dashboard/user/create', // URL düzeltildi
+                    method: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        $('#addUserModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON?.error || 'Kullanıcı eklenirken bir hata oluştu');
+                    }
+                });
+            });
+    
+            // Edit User Button Click
+            $('.edit-user').on('click', function() {
+                const userId = $(this).data('id');
+                
+                $.ajax({
+                    url: `/dashboard/user/${userId}`, // URL düzeltildi
+                    method: 'GET',
+                    success: function(user) {
+                        $('#editUserId').val(user._id);
+                        $('#editFirstName').val(user.firstName);
+                        $('#editLastName').val(user.lastName);
+                        $('#editStudentId').val(user.studentId);
+                        $('#editEmail').val(user.email);
+                        $('#editRole').val(user.role);
+                        $('#editIsVerified').val(user.isVerified);
+                        
+                        $('#editUserModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON?.error || 'Kullanıcı bilgileri alınırken bir hata oluştu');
+                    }
+                });
+            });
+    
+            // Edit User Form Submit
+            $('#editUserForm').on('submit', function(e) {
+                e.preventDefault();
+                const userId = $('#editUserId').val();
+                const formData = $(this).serialize();
+                
+                $.ajax({
+                    url: `/dashboard/user/${userId}`, // URL düzeltildi
+                    method: 'PUT',
+                    data: formData,
+                    success: function(response) {
+                        $('#editUserModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON?.error || 'Kullanıcı güncellenirken bir hata oluştu');
+                    }
+                });
+            });
+    
+            // Delete User Button Click
+            $('.delete-user').on('click', function() {
+                if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
+                    const userId = $(this).data('id');
+                    
+                    $.ajax({
+                        url: `/dashboard/user/${userId}`, // URL düzeltildi
+                        method: 'DELETE',
+                        success: function(response) {
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            alert(xhr.responseJSON?.error || 'Kullanıcı silinirken bir hata oluştu');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -32,12 +32,16 @@ app.set('views', path.join(__dirname, 'views'));
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const wwwRoutes = require("./routes/www/wwwRoutes");
-
-
+const apiDashboardRoutes = require("./routes/dashboard/apiDashboardRoutes.js");
+const wwwDashboardRoutes = require("./routes/dashboard/wwwDashboardRoutes.js");
 // Routes-use
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/", wwwRoutes);
+
+app.use("/api/dashboard", apiDashboardRoutes);
+app.use("/dashboard", wwwDashboardRoutes);
+
 
 // home redirect
 app.get("/", (req, res) => {

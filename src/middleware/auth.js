@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { accessToken, refreshToken } = require("../config/jwtConfig");
+const { accessTokenDashboard, refreshTokenDashboard } = require("../config/jwtConfig");
 const RefreshToken = require("../models/RefreshToken");
 const User = require("../models/User");
 const { ROLES, rolePermissions } = require("../constans/rolesAndPermissions");
@@ -51,29 +51,29 @@ const verifyRefreshToken = async (req, res, next) => {
 };
 
 const authenticate = async (req, res, next) => {
-  const token = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
+  const token = req.cookies.accessTokenDashboard || req.headers.authorization?.split(" ")[1];
   if (!token) {
-    return next(new AppError(MESSAGES.TOKEN_REQUIRED, HTTP_CODES.FORBIDDEN));
+    return res.redirect("/dashboard/login");
   }
 
   try {
     // DB'den güncel kullanıcıyı al (Rollerin güncel olması için önemli)
-    const decoded = jwt.verify(token, accessToken.secret);
+    const decoded = jwt.verify(token, accessTokenDashboard.secret);
     const user = await User.findById(decoded.id).select('-password');
     if (!user) {
-      return res.status(HTTP_CODES.UNAUTHORIZED).json({ message: MESSAGES.USER_NOT_FOUND });
+      return res.redirect("/dashboard/login");
     }
     req.user = user; // TAM KULLANICI NESNESİNİ EKLE
     next();
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
-      return res.status(HTTP_CODES.UNAUTHORIZED).json({ message: MESSAGES.SESSION_EXPIRED });
-    }
+        return res.redirect("/dashboard/login");
+      }
     if (err instanceof jwt.JsonWebTokenError) {
-      return res.status(HTTP_CODES.UNAUTHORIZED).json({ message: MESSAGES.INVALID_TOKEN });
+      return res.redirect("/dashboard/login");
     }
     console.error("Authenticate Error:", err);
-    return res.status(HTTP_CODES.INT_SERVER_ERROR).json({ message: MESSAGES.AUTHENTICATION_ERROR });
+    return res.redirect("/dashboard/login");
   }
 };
 
@@ -82,7 +82,7 @@ const checkPermission = (requiredPermission) => {
     // authenticate middleware'i req.user'ı (roller dahil) doldurmuş olmalı
     if (!req.user || !Array.isArray(req.user.roles)) {
       console.error("RBAC checkPermission Error: req.user.roles tanımsız.");
-      return next(new AppError(MESSAGES.INVALID_ROLE, HTTP_CODES.UNAUTHORIZED));
+      return next(new Error(MESSAGES.INVALID_ROLE, HTTP_CODES.UNAUTHORIZED));
     }
 
     const userRoles = req.user.roles;
@@ -103,7 +103,7 @@ const checkPermission = (requiredPermission) => {
     if (hasPermission) {
       next();
     } else {
-      return next(new AppError(MESSAGES.PERMISSION_DENIED, HTTP_CODES.FORBIDDEN));
+      return next(new Error(MESSAGES.PERMISSION_DENIED, HTTP_CODES.FORBIDDEN));
     }
   };
 };

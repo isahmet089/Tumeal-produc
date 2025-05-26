@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Yemekler</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+     
+    <!-- css -->
+    <%- include('../partials/dashboard/common/css')  %>
+    <!-- Custom styles for this page -->
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- header ve nav dosyam-->
+        <%- include('../partials/dashboard/common/header-nav')  %>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+              
+                <!-- Begin Page Content -->
+                 <!-- Begin Page Content -->
+                 <div class="container-fluid">
+                          <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Çıktı Al</a>
+                    </div>
+
+                   <!-- İstatistiksel Veriler -->
+                   <div class="row">
+                    <!-- Toplam Yemek Sayısı -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Toplam Yemek Sayısı</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800"><%= meals.length %></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-utensils fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ortalama Puan -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Ortalama Puan</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800"><%= (meals.reduce((acc, meal) => acc + meal.avarageRating, 0) / meals.length).toFixed(1) %> / 5</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-star fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- En Yüksek Puanlı Yemek -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                            En Yüksek Puanlı Yemek</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800"><%= meals.sort((a, b) => b.avarageRating - a.avarageRating)[0]?.mealName.anaYemek || 'Yok' %></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-medal fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- En Düşük Puanlı Yemek -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                            En Düşük Puanlı Yemek</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800"><%= meals.sort((a, b) => a.avarageRating - b.avarageRating)[0]?.mealName.anaYemek || 'Yok' %></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-poo fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+               
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Yemekler</h6>
+                            </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Yemek İd</th>
+                                            <th>Tarih</th>
+                                            <th>Pilav</th>
+                                            <th>Çorba</th>
+                                            <th>Tatlı-Salata</th>
+                                            <th>Ana Yemek</th>
+                                            <th>Kalori</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% meals.forEach(meal => { %>
+                                            <tr>
+                                                <td><%= meal._id %></td>
+                                                <td><%= new Date(meal.date).toLocaleDateString() %></td>
+                                                <td><%= meal.mealName.pilav.name %></td>
+                                                <td><%= meal.mealName.corba.name %></td>
+                                                <td><%= meal.mealName.tatli ? meal.mealName.tatli.name : "Yok" %></td>
+                                                <td><%= meal.mealName.anaYemek.name %></td>
+                                                <td><%= meal.totalCalories %> kcal</td>
+                                                
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+           
+        </div>
+    </div>
+    <%- include('../partials/dashboard/common/footer')  %>
+  
+    <%- include('../partials/dashboard/common/script')  %>
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="/js/demo/datatables-demo.js"></script>
+</body>
+
+</html>

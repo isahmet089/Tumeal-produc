@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bildirim Yönetimi</title>
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <%- include('../partials/dashboard/common/css')  %>
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <style>
+        .badge-app { background: #4e73df; }
+        .badge-meal { background: #1cc88a; }
+        .badge-passive { background: #858796; }
+        .badge-active { background: #36b9cc; }
+    </style>
+</head>
+<body id="page-top">
+    <div id="wrapper">
+        <%- include('../partials/dashboard/common/header-nav')  %>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Bildirim Yönetimi</h1>
+                    </div>
+                    <div class="row">
+                        <!-- Uygulama Bildirimi Formu -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card shadow">
+                                <div class="card-header bg-primary text-white">
+                                    <i class="fas fa-mobile-alt"></i> Uygulama Bildirimi Gönder
+                                </div>
+                                <div class="card-body">
+                                    <form id="appNotificationForm">
+                                        <div class="form-group">
+                                            <label>Başlık</label>
+                                            <input type="text" class="form-control" name="title" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Mesaj</label>
+                                            <textarea class="form-control" name="message" rows="2" required></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Tip</label>
+                                            <select class="form-control" name="type" required>
+                                                <option value="info">Bilgi</option>
+                                                <option value="success">Başarı</option>
+                                                <option value="warning">Uyarı</option>
+                                                <option value="error">Hata</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-block">Gönder</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Yemekhane Bildirimi Formu -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card shadow">
+                                <div class="card-header bg-success text-white">
+                                    <i class="fas fa-utensils"></i> Yemekhane Bildirimi Gönder
+                                </div>
+                                <div class="card-body">
+                                    <form id="mealNotificationForm">
+                                        <div class="form-group">
+                                            <label>Başlık</label>
+                                            <input type="text" class="form-control" name="title" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Mesaj</label>
+                                            <textarea class="form-control" name="message" rows="2" required></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Tip</label>
+                                            <select class="form-control" name="type" required>
+                                                <option value="menu">Menü</option>
+                                                <option value="announcement">Duyuru</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-success btn-block">Gönder</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Bildirim Tablosu -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Bildirimler</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="notificationTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Tarih</th>
+                                            <th>Başlık</th>
+                                            <th>Mesaj</th>
+                                            <th>Tür</th>
+                                            <th>Tip</th>
+                                            <th>Durum</th>
+                                            <th>İşlem</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% notifications.forEach(notification => { %>
+                                            <tr>
+                                                <td><%= new Date(notification.createdAt).toLocaleString() %></td>
+                                                <td><%= notification.title %></td>
+                                                <td><%= notification.message %></td>
+                                                <td>
+                                                    <span class="badge <%= notification.notificationType === 'app' ? 'badge-app' : 'badge-meal' %>">
+                                                        <%= notification.notificationType === 'app' ? 'Uygulama' : 'Yemekhane' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-info"><%= notification.type %></span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge <%= notification.isActive ? 'badge-active' : 'badge-passive' %>">
+                                                        <%= notification.isActive ? 'Aktif' : 'Pasif' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-info btn-sm view-notification" data-id="<%= notification._id %>">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm delete-notification" data-id="<%= notification._id %>">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bildirim Detay Modalı -->
+        <div class="modal fade" id="notificationDetailModal" tabindex="-1" role="dialog" aria-labelledby="notificationDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="notificationDetailModalLabel">Bildirim Detayı</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <dl class="row">
+                            <dt class="col-sm-4">Başlık</dt>
+                            <dd class="col-sm-8" id="detailTitle"></dd>
+                            <dt class="col-sm-4">Mesaj</dt>
+                            <dd class="col-sm-8" id="detailMessage"></dd>
+                            <dt class="col-sm-4">Tür</dt>
+                            <dd class="col-sm-8" id="detailType"></dd>
+                            <dt class="col-sm-4">Tip</dt>
+                            <dd class="col-sm-8" id="detailType2"></dd>
+                            <dt class="col-sm-4">Tarih</dt>
+                            <dd class="col-sm-8" id="detailDate"></dd>
+                            <dt class="col-sm-4">Durum</dt>
+                            <dd class="col-sm-8" id="detailStatus"></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partials/dashboard/common/footer')  %>
+        <%- include('../partials/dashboard/common/script')  %>
+        <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+        <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#notificationTable').DataTable({
+                    order: [[0, 'desc']],
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json'
+                    },
+                    responsive: true,
+                    pageLength: 10
+                });
+
+                // Uygulama bildirimi gönder
+                $('#appNotificationForm').on('submit', function(e) {
+                    e.preventDefault();
+                    const formData = $(this).serialize() + '&notificationType=app';
+                    $.ajax({
+                        url: '/dashboard/notification/create',
+                        method: 'POST',
+                        data: formData,
+                        success: function() {
+                            $('#appNotificationForm')[0].reset();
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            alert(xhr.responseJSON?.error || 'Bildirim gönderilemedi');
+                        }
+                    });
+                });
+
+                // Yemekhane bildirimi gönder
+                $('#mealNotificationForm').on('submit', function(e) {
+                    e.preventDefault();
+                    const formData = $(this).serialize() + '&notificationType=meal';
+                    $.ajax({
+                        url: '/dashboard/notification/create',
+                        method: 'POST',
+                        data: formData,
+                        success: function() {
+                            $('#mealNotificationForm')[0].reset();
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            alert(xhr.responseJSON?.error || 'Bildirim gönderilemedi');
+                        }
+                    });
+                });
+
+                // Bildirim detay modalı
+                $('.view-notification').on('click', function() {
+                    const notificationId = $(this).data('id');
+                    $.ajax({
+                        url: `/dashboard/notification/${notificationId}`,
+                        method: 'GET',
+                        success: function(notification) {
+                            $('#detailTitle').text(notification.title);
+                            $('#detailMessage').text(notification.message);
+                            $('#detailType').text(notification.notificationType === 'app' ? 'Uygulama' : 'Yemekhane');
+                            $('#detailType2').text(notification.type);
+                            $('#detailDate').text(new Date(notification.createdAt).toLocaleString());
+                            $('#detailStatus').text(notification.isActive ? 'Aktif' : 'Pasif');
+                            $('#notificationDetailModal').modal('show');
+                        },
+                        error: function() {
+                            alert('Bildirim detayı alınamadı');
+                        }
+                    });
+                });
+
+                // Bildirim sil
+                $('.delete-notification').on('click', function() {
+                    if (confirm('Bu bildirimi silmek istediğinizden emin misiniz?')) {
+                        const notificationId = $(this).data('id');
+                        $.ajax({
+                            url: `/dashboard/notification/${notificationId}`,
+                            method: 'DELETE',
+                            success: function() {
+                                location.reload();
+                            },
+                            error: function() {
+                                alert('Bildirim silinemedi');
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

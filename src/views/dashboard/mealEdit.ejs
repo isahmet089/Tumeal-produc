@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Yemek Yönetimi</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+     
+    <!-- css -->
+    <%- include('../partials/dashboard/common/css')  %>
+    <!-- Custom styles for this page -->
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- header ve nav dosyam-->
+        <%- include('../partials/dashboard/common/header-nav')  %>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Yemek Yönetimi</h1>
+                        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#addMealModal">
+                            <i class="fas fa-utensils fa-sm text-white-50"></i> Yeni Yemek Ekle
+                        </button>
+                    </div>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Yemek Listesi</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Tarih</th>
+                                            <th>Çorba</th>
+                                            <th>Ana Yemek</th>
+                                            <th>Pilav</th>
+                                            <th>Tatlı</th>
+                                            <th>Toplam Kalori</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% meals.forEach(meal => { %>
+                                            <tr>
+                                                <td><%= new Date(meal.date).toLocaleDateString() %></td>
+                                                <td><%= meal.mealName.corba.name %> (<%= meal.mealName.corba.calories %> kcal)</td>
+                                                <td><%= meal.mealName.anaYemek.name %> (<%= meal.mealName.anaYemek.calories %> kcal)</td>
+                                                <td><%= meal.mealName.pilav.name %> (<%= meal.mealName.pilav.calories %> kcal)</td>
+                                                <td><%= meal.mealName.tatli ? meal.mealName.tatli.name + ' (' + meal.mealName.tatli.calories + ' kcal)' : 'Yok' %></td>
+                                                <td><%= meal.totalCalories %> kcal</td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-sm edit-meal" data-id="<%= meal._id %>">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm delete-meal" data-id="<%= meal._id %>">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Meal Modal -->
+    <div class="modal fade" id="addMealModal" tabindex="-1" role="dialog" aria-labelledby="addMealModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMealModalLabel">Yeni Yemek Ekle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="addMealForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="date">Tarih</label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Çorba</h6>
+                                <div class="form-group">
+                                    <label for="corbaName">İsim</label>
+                                    <input type="text" class="form-control" id="corbaName" name="mealName[corba][name]" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="corbaCalories">Kalori</label>
+                                    <input type="number" class="form-control" id="corbaCalories" name="mealName[corba][calories]" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6>Ana Yemek</h6>
+                                <div class="form-group">
+                                    <label for="anaYemekName">İsim</label>
+                                    <input type="text" class="form-control" id="anaYemekName" name="mealName[anaYemek][name]" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="anaYemekCalories">Kalori</label>
+                                    <input type="number" class="form-control" id="anaYemekCalories" name="mealName[anaYemek][calories]" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Pilav</h6>
+                                <div class="form-group">
+                                    <label for="pilavName">İsim</label>
+                                    <input type="text" class="form-control" id="pilavName" name="mealName[pilav][name]" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pilavCalories">Kalori</label>
+                                    <input type="number" class="form-control" id="pilavCalories" name="mealName[pilav][calories]" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6>Tatlı (Opsiyonel)</h6>
+                                <div class="form-group">
+                                    <label for="tatliName">İsim</label>
+                                    <input type="text" class="form-control" id="tatliName" name="mealName[tatli][name]">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tatliCalories">Kalori</label>
+                                    <input type="number" class="form-control" id="tatliCalories" name="mealName[tatli][calories]" value="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Meal Modal -->
+    <div class="modal fade" id="editMealModal" tabindex="-1" role="dialog" aria-labelledby="editMealModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editMealModalLabel">Yemek Düzenle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="editMealForm">
+                    <input type="hidden" id="editMealId">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="editDate">Tarih</label>
+                            <input type="date" class="form-control" id="editDate" name="date" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Çorba</h6>
+                                <div class="form-group">
+                                    <label for="editCorbaName">İsim</label>
+                                    <input type="text" class="form-control" id="editCorbaName" name="mealName[corba][name]" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editCorbaCalories">Kalori</label>
+                                    <input type="number" class="form-control" id="editCorbaCalories" name="mealName[corba][calories]" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6>Ana Yemek</h6>
+                                <div class="form-group">
+                                    <label for="editAnaYemekName">İsim</label>
+                                    <input type="text" class="form-control" id="editAnaYemekName" name="mealName[anaYemek][name]" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editAnaYemekCalories">Kalori</label>
+                                    <input type="number" class="form-control" id="editAnaYemekCalories" name="mealName[anaYemek][calories]" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Pilav</h6>
+                                <div class="form-group">
+                                    <label for="editPilavName">İsim</label>
+                                    <input type="text" class="form-control" id="editPilavName" name="mealName[pilav][name]" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editPilavCalories">Kalori</label>
+                                    <input type="number" class="form-control" id="editPilavCalories" name="mealName[pilav][calories]" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6>Tatlı (Opsiyonel)</h6>
+                                <div class="form-group">
+                                    <label for="editTatliName">İsim</label>
+                                    <input type="text" class="form-control" id="editTatliName" name="mealName[tatli][name]">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editTatliCalories">Kalori</label>
+                                    <input type="number" class="form-control" id="editTatliCalories" name="mealName[tatli][calories]" value="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-primary">Güncelle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/dashboard/common/footer')  %>
+    <%- include('../partials/dashboard/common/script')  %>
+    
+    <!-- Page level plugins -->
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    
+
+    <!-- Custom scripts for meal management -->
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#dataTable').DataTable({
+                order: [[0, 'desc']], // Tarihe göre sırala
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json' // Türkçe dil desteği
+                }
+            });
+    
+            // Form resetleme fonksiyonu
+            function resetForm(formId) {
+                $(`#${formId}`)[0].reset();
+                $(`#${formId} input[name="mealName[tatli][calories]"]`).val('0');
+            }
+    
+            // Add Meal Form Submit
+            $('#addMealForm').on('submit', function(e) {
+                e.preventDefault();
+                const formData = $(this).serialize();
+                
+                $.ajax({
+                    url: '/dashboard/meal/create',
+                    method: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        $('#addMealModal').modal('hide');
+                        resetForm('addMealForm');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.error || 'Yemek eklenirken bir hata oluştu';
+                        alert(errorMsg);
+                    }
+                });
+            });
+    
+            // Edit Meal Button Click
+            $('.edit-meal').on('click', function() {
+                const mealId = $(this).data('id');
+                
+                $.ajax({
+                    url: `/dashboard/meal/${mealId}`,
+                    method: 'GET',
+                    success: function(meal) {
+                        $('#editMealId').val(meal._id);
+                        $('#editDate').val(meal.date.split('T')[0]);
+                        $('#editCorbaName').val(meal.mealName.corba.name);
+                        $('#editCorbaCalories').val(meal.mealName.corba.calories);
+                        $('#editAnaYemekName').val(meal.mealName.anaYemek.name);
+                        $('#editAnaYemekCalories').val(meal.mealName.anaYemek.calories);
+                        $('#editPilavName').val(meal.mealName.pilav.name);
+                        $('#editPilavCalories').val(meal.mealName.pilav.calories);
+                        
+                        if (meal.mealName.tatli) {
+                            $('#editTatliName').val(meal.mealName.tatli.name);
+                            $('#editTatliCalories').val(meal.mealName.tatli.calories);
+                        } else {
+                            $('#editTatliName').val('');
+                            $('#editTatliCalories').val('0');
+                        }
+                        
+                        $('#editMealModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.error || 'Yemek bilgileri alınırken bir hata oluştu';
+                        alert(errorMsg);
+                    }
+                });
+            });
+    
+            // Edit Meal Form Submit
+            $('#editMealForm').on('submit', function(e) {
+                e.preventDefault();
+                const mealId = $('#editMealId').val();
+                const formData = $(this).serialize();
+                
+                $.ajax({
+                    url: `/dashboard/meal/${mealId}`,
+                    method: 'PUT',
+                    data: formData,
+                    success: function(response) {
+                        $('#editMealModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.error || 'Yemek güncellenirken bir hata oluştu';
+                        alert(errorMsg);
+                    }
+                });
+            });
+    
+            // Delete Meal Button Click
+            $('.delete-meal').on('click', function() {
+                if (confirm('Bu yemeği silmek istediğinizden emin misiniz?')) {
+                    const mealId = $(this).data('id');
+                    
+                    $.ajax({
+                        url: `/dashboard/meal/${mealId}`,
+                        method: 'DELETE',
+                        success: function(response) {
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            const errorMsg = xhr.responseJSON?.error || 'Yemek silinirken bir hata oluştu';
+                            alert(errorMsg);
+                        }
+                    });
+                }
+            });
+    
+            // Modal kapandığında formları resetle
+            $('#addMealModal').on('hidden.bs.modal', function() {
+                resetForm('addMealForm');
+            });
+    
+            $('#editMealModal').on('hidden.bs.modal', function() {
+                resetForm('editMealForm');
+            });
+    
+            // Kalori alanları için input kontrolü
+            $('input[type="number"]').on('input', function() {
+                const value = $(this).val();
+                if (value < 0) {
+                    $(this).val(0);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

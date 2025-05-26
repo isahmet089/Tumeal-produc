@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Yorum Yönetimi</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+     
+    <!-- css -->
+    <%- include('../partials/dashboard/common/css')  %>
+    <!-- Custom styles for this page -->
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- header ve nav dosyam-->
+        <%- include('../partials/dashboard/common/header-nav')  %>
+      
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Yorum Yönetimi</h1>
+                    </div>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Yorum Listesi</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Tarih</th>
+                                            <th>Kullanıcı</th>
+                                            <th>İçerik</th>
+                                            <th>Beğeni</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% comments.forEach(comment => { %>
+                                            <tr>
+                                                <td><%= new Date(comment.createdAt).toLocaleDateString() %></td>
+                                                <td>
+                                                    <%= comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Silinmiş Kullanıcı' %>
+                                                </td>
+                                                <td><%= comment.content %></td>
+                                                
+                                                <td>
+                                                    <span class="badge badge-info">
+                                                        <i class="fas fa-heart"></i> <%= comment.likes ? comment.likes.length : 0 %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-info btn-sm view-comment" data-id="<%= comment._id %>" title="Görüntüle">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm delete-comment" data-id="<%= comment._id %>" title="Sil">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+        </div>
+    </div>
+
+    <!-- View Comment Modal -->
+    <div class="modal fade" id="viewCommentModal" tabindex="-1" role="dialog" aria-labelledby="viewCommentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewCommentModalLabel">Yorum Detayı</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Kullanıcı</label>
+                        <p id="viewUserName"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>İçerik</label>
+                        <p id="viewContent"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Beğeni Sayısı</label>
+                        <p id="viewLikeCount"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Tarih</label>
+                        <p id="viewDate"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/dashboard/common/footer')  %>     
+    <%- include('../partials/dashboard/common/script')  %>
+
+    <!-- Page level plugins -->
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Custom scripts for comment management -->
+    <script>
+        $(document).ready(function() {
+            // DataTable'ı destroy et ve yeniden initialize et
+            if ($.fn.DataTable.isDataTable('#dataTable')) {
+                $('#dataTable').DataTable().destroy();
+            }
+            
+            // Initialize DataTable
+            $('#dataTable').DataTable({
+                order: [[0, 'desc']], // Tarihe göre sırala
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json' // Türkçe dil desteği
+                },
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Tümü"]]
+            });
+
+            // View Comment Button Click
+            $('.view-comment').on('click', function() {
+                const commentId = $(this).data('id');
+                
+                $.ajax({
+                    url: `/dashboard/comment/${commentId}`,
+                    method: 'GET',
+                    success: function(comment) {
+                        $('#viewUserName').text(`${comment.user.firstName} ${comment.user.lastName}`);
+                        $('#viewContent').text(comment.content);
+                        $('#viewLikeCount').text(comment.likeCount);
+                        $('#viewDate').text(new Date(comment.createdAt).toLocaleString());
+                        
+                        $('#viewCommentModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.error || 'Yorum bilgileri alınırken bir hata oluştu';
+                        alert(errorMsg);
+                    }
+                });
+            });
+
+            // Delete Comment Button Click
+            $('.delete-comment').on('click', function() {
+                if (confirm('Bu yorumu silmek istediğinizden emin misiniz?')) {
+                    const commentId = $(this).data('id');
+                    
+                    $.ajax({
+                        url: `/dashboard/comment/${commentId}`,
+                        method: 'DELETE',
+                        success: function(response) {
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            const errorMsg = xhr.responseJSON?.error || 'Yorum silinirken bir hata oluştu';
+                            alert(errorMsg);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

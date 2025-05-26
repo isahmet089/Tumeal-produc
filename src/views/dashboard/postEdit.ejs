@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>İçerik Yönetimi</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+     
+    <!-- css -->
+    <%- include('../partials/dashboard/common/css')  %>
+    <!-- Custom styles for this page -->
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- header ve nav dosyam-->
+        <%- include('../partials/dashboard/common/header-nav')  %>
+      
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">İçerik Yönetimi</h1>
+                        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#addPostModal">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Yeni İçerik Ekle
+                        </button>
+                    </div>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">İçerik Listesi</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Tarih</th>
+                                            <th>Başlık</th>
+                                            <th>Yazar</th>
+                                            <th>Yorum Sayısı</th>
+                                            <th>Beğeni Sayısı</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% posts.forEach(post => { %>
+                                            <tr>
+                                                <td><%= new Date(post.createdAt).toLocaleDateString() %></td>
+                                                <td><%= post.title %></td>
+                                                <td><%= post.user ? `${post.user.firstName} ${post.user.lastName}` : 'Silinmiş Kullanıcı' %></td>
+                                                <td><%= post.comments ? post.comments.length : 0 %></td>
+                                                <td><%= post.likes ? post.likes.length : 0 %></td>
+                                                <td>
+                                                    <button class="btn btn-info btn-sm view-post" data-id="<%= post._id %>" title="Görüntüle">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-primary btn-sm edit-post" data-id="<%= post._id %>" title="Düzenle">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm delete-post" data-id="<%= post._id %>" title="Sil">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Post Modal -->
+    <div class="modal fade" id="addPostModal" tabindex="-1" role="dialog" aria-labelledby="addPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPostModalLabel">Yeni İçerik Ekle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="addPostForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="title">Başlık</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">İçerik</label>
+                            <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Post Modal -->
+    <div class="modal fade" id="editPostModal" tabindex="-1" role="dialog" aria-labelledby="editPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPostModalLabel">İçerik Düzenle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="editPostForm">
+                    <input type="hidden" id="editPostId">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="editTitle">Başlık</label>
+                            <input type="text" class="form-control" id="editTitle" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editContent">İçerik</label>
+                            <textarea class="form-control" id="editContent" name="content" rows="5" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-primary">Güncelle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Post Modal -->
+    <div class="modal fade" id="viewPostModal" tabindex="-1" role="dialog" aria-labelledby="viewPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewPostModalLabel">İçerik Detayı</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Başlık</label>
+                        <p id="viewTitle"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>İçerik</label>
+                        <p id="viewContent"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Yazar</label>
+                        <p id="viewAuthor"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Tarih</label>
+                        <p id="viewDate"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Yorum Sayısı</label>
+                        <p id="viewCommentCount"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Beğeni Sayısı</label>
+                        <p id="viewLikeCount"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/dashboard/common/footer')  %>     
+    <%- include('../partials/dashboard/common/script')  %>
+
+    <!-- Page level plugins -->
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Custom scripts for post management -->
+    <script>
+        $(document).ready(function() {
+            // DataTable'ı destroy et ve yeniden initialize et
+            if ($.fn.DataTable.isDataTable('#dataTable')) {
+                $('#dataTable').DataTable().destroy();
+            }
+            
+            // Initialize DataTable
+            $('#dataTable').DataTable({
+                order: [[0, 'desc']], // Tarihe göre sırala
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json' // Türkçe dil desteği
+                },
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Tümü"]]
+            });
+
+            // Add Post Form Submit
+            $('#addPostForm').on('submit', function(e) {
+                e.preventDefault();
+                const formData = $(this).serialize();
+                
+                $.ajax({
+                    url: '/dashboard/post/create',
+                    method: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        $('#addPostModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.error || 'İçerik eklenirken bir hata oluştu';
+                        alert(errorMsg);
+                    }
+                });
+            });
+
+            // Edit Post Button Click
+            $('.edit-post').on('click', function() {
+                const postId = $(this).data('id');
+                
+                $.ajax({
+                    url: `/dashboard/post/${postId}`,
+                    method: 'GET',
+                    success: function(post) {
+                        $('#editPostId').val(post._id);
+                        $('#editTitle').val(post.title);
+                        $('#editContent').val(post.content);
+                        
+                        $('#editPostModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.error || 'İçerik bilgileri alınırken bir hata oluştu';
+                        alert(errorMsg);
+                    }
+                });
+            });
+
+            // Edit Post Form Submit
+            $('#editPostForm').on('submit', function(e) {
+                e.preventDefault();
+                const postId = $('#editPostId').val();
+                const formData = $(this).serialize();
+                
+                $.ajax({
+                    url: `/dashboard/post/${postId}`,
+                    method: 'PUT',
+                    data: formData,
+                    success: function(response) {
+                        $('#editPostModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.error || 'İçerik güncellenirken bir hata oluştu';
+                        alert(errorMsg);
+                    }
+                });
+            });
+
+            // View Post Button Click
+            $('.view-post').on('click', function() {
+                const postId = $(this).data('id');
+                
+                $.ajax({
+                    url: `/dashboard/post/${postId}`,
+                    method: 'GET',
+                    success: function(post) {
+                        $('#viewTitle').text(post.title);
+                        $('#viewContent').text(post.content);
+                        $('#viewAuthor').text(post.user ? `${post.user.firstName} ${post.user.lastName}` : 'Silinmiş Kullanıcı');
+                        $('#viewDate').text(new Date(post.createdAt).toLocaleString());
+                        $('#viewCommentCount').text(post.comments ? post.comments.length : 0);
+                        $('#viewLikeCount').text(post.likes ? post.likes.length : 0);
+                        
+                        $('#viewPostModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.error || 'İçerik bilgileri alınırken bir hata oluştu';
+                        alert(errorMsg);
+                    }
+                });
+            });
+
+            // Delete Post Button Click
+            $('.delete-post').on('click', function() {
+                if (confirm('Bu içeriği silmek istediğinizden emin misiniz?')) {
+                    const postId = $(this).data('id');
+                    
+                    $.ajax({
+                        url: `/dashboard/post/${postId}`,
+                        method: 'DELETE',
+                        success: function(response) {
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            const errorMsg = xhr.responseJSON?.error || 'İçerik silinirken bir hata oluştu';
+                            alert(errorMsg);
+                        }
+                    });
+                }
+            });
+
+            // Modal kapandığında formları resetle
+            $('#addPostModal').on('hidden.bs.modal', function() {
+                $('#addPostForm')[0].reset();
+            });
+
+            $('#editPostModal').on('hidden.bs.modal', function() {
+                $('#editPostForm')[0].reset();
+            });
+        });
+    </script>
+</body>
+</html>

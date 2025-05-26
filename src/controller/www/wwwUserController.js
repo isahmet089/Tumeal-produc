@@ -3,6 +3,7 @@ const Favorite = require("../../models/Favorite");
 const Post = require("../../models/Post");
 const Comment = require("../../models/Comment");   
 const Log = require("../../models/Log");
+const Notification = require("../../models/Notification");
 
 const showMenu = async (req, res) => {
     res.render("www/menu", {
@@ -434,6 +435,50 @@ const getStats2 = async (req, res) => {
     }
 };
 
+const getAppNotifications = async (req, res) => {
+    try {
+        console.log('Uygulama bildirimleri isteniyor...');
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const notifications = await Notification.find({
+            notificationType: 'app',
+            isActive: true,
+            createdAt: { $gte: thirtyDaysAgo }
+        })
+        .sort({ createdAt: -1 })
+        .lean();
+
+        console.log(`${notifications.length} adet uygulama bildirimi bulundu`);
+        res.json(notifications);
+    } catch (error) {
+        console.error('Uygulama bildirimleri getirme hatası:', error);
+        res.status(500).json({ error: "Bildirimler getirilirken bir hata oluştu" });
+    }
+};
+
+const getMealNotifications = async (req, res) => {
+    try {
+        console.log('Yemekhane bildirimleri isteniyor...');
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const notifications = await Notification.find({
+            notificationType: 'meal',
+            isActive: true,
+            createdAt: { $gte: thirtyDaysAgo }
+        })
+        .sort({ createdAt: -1 })
+        .lean();
+
+        console.log(`${notifications.length} adet yemekhane bildirimi bulundu`);
+        res.json(notifications);
+    } catch (error) {
+        console.error('Yemekhane bildirimleri getirme hatası:', error);
+        res.status(500).json({ error: "Bildirimler getirilirken bir hata oluştu" });
+    }
+};
+
 module.exports = {
     toggleFavorite,
     showMenu,
@@ -451,6 +496,8 @@ module.exports = {
     getFeedBugun,
     getUser,
     getStats,
-    getStats2
+    getStats2,
+    getAppNotifications,
+    getMealNotifications
 
 };
