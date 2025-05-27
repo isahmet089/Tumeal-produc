@@ -47,6 +47,12 @@ app.use("/dashboard", wwwDashboardRoutes);
 app.get("/", (req, res) => {
     res.redirect("/home");
 });
+app.get("/dashboard", (req, res) => {
+    res.redirect("/dashboard/log/data");
+});
+app.get("/dashboard/home", (req, res) => {
+    res.redirect("/dashboard/log/data");
+});
 
 
 module.exports = app;

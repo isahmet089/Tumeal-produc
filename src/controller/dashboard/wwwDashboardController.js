@@ -79,7 +79,7 @@ const login = async (req, res) => {
           res.cookie("refreshTokenDashboard", tokens.refreshToken, cookieOptions);
           res.locals.user = user;
           console.log(res.locals.user);
-        res.redirect("/dashboard/home");
+        res.redirect("/dashboard/log/data");
     } catch (error) {
         console.log(error);
         res.render("dashboard/login", {
