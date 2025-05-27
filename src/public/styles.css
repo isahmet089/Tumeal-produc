@@ -41,6 +41,7 @@ body {
     transition: color 0.3s ease;
 }
 
+
 .nav-link:hover, .nav-link.active {
     color: var(--secondary-color) !important;
 }
@@ -195,3 +196,34 @@ body {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 } 
+ /* Mobil görünüm için özel stiller */
+ @media (max-width: 767.98px) {
+    .navbar-collapse {
+        position: fixed;
+        top: 56px; /* Navbar yüksekliği */
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+
+    .navbar-collapse .d-flex {
+        padding: 1rem 0;
+    }
+
+    .navbar-collapse .nav-link {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .navbar-collapse .nav-link:last-child {
+        border-bottom: none;
+    }
+
+    /* Profil resmi ve bildirim ikonları için özel stil */
+    .navbar-collapse .position-relative {
+        margin: 0.5rem 0;
+    }
+}

@@ -1,15 +1,20 @@
 <nav class="navbar navbar-light bg-white shadow-sm">
     <div class="container">
-        <a class="navbar-brand brand" href="/home">
+        <!-- Logo - Mobilde ortada, desktop'ta solda -->
+        <a class="navbar-brand brand d-md-none mx-auto" href="/home">
             <i class="fa-solid fa-mug-hot logo"></i>TuMeal
         </a>
-        <div class="d-flex gap-3 align-items-center">
+        <a class="navbar-brand brand d-none d-md-block" href="/home">
+            <i class="fa-solid fa-mug-hot logo"></i>TuMeal
+        </a>
+
+        <!-- Desktop menü -->
+        <div class="d-none d-md-flex gap-3 align-items-center">
             <a href="/home" class="nav-link"><i class="fa-solid fa-home me-1"></i> Ana Sayfa</a>
             <a href="/menu" class="nav-link"><i class="fa-solid fa-calendar-days me-1"></i> Haftalık Menü</a>
             <a href="/feed" class="nav-link"><i class="fa-solid fa-comments me-1"></i> Tartışmalar</a>
             
             <% if (locals.user) { %>
-                <!-- Giriş yapmış kullanıcılar için -->
                 <a href="/notification" class="nav-link position-relative">
                     <i class="fa-regular fa-bell"></i>
                     <span class="position-absolute top-0 start-100 translate-middle bg-danger text-white" style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;padding:0;border-radius:50%;">3</span>
@@ -25,10 +30,71 @@
                     </button>
                 </form>
             <% } else { %>
-                <!-- Giriş yapmamış kullanıcılar için -->
                 <a href="/login" class="nav-link"><i class="fa-solid fa-sign-in-alt me-1"></i> Giriş Yap</a>
                 <a href="/register" class="nav-link"><i class="fa-solid fa-user-plus me-1"></i> Kayıt Ol</a>
             <% } %>
         </div>
+
+        <!-- Mobil menü -->
+        <div class="d-md-none fixed-bottom bg-white border-top">
+            <div class="container">
+                <div class="d-flex justify-content-around py-2">
+                    <a href="/home" class="nav-link text-dark">
+                        <i class="fa-solid fa-home fa-lg"></i>
+                    </a>
+                    <a href="/menu" class="nav-link text-dark">
+                        <i class="fa-solid fa-calendar-days fa-lg"></i>
+                    </a>
+                    <a href="/feed" class="nav-link text-dark">
+                        <i class="fa-solid fa-comments fa-lg"></i>
+                    </a>
+                    
+                    <% if (locals.user) { %>
+                        <a href="/notification" class="nav-link text-dark position-relative">
+                            <i class="fa-regular fa-bell fa-lg"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle bg-danger text-white" 
+                                  style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;padding:0;border-radius:50%;">3</span>
+                        </a>
+                        <a href="/profile" class="nav-link text-dark">
+                            <img src="https://ui-avatars.com/api/?name=<%= user.firstName %>+<%= user.lastName %>&background=ececec&color=2c3e50" 
+                                 alt="Profil" 
+                                 style="width:24px;height:24px;border-radius:50%;object-fit:cover;">
+                        </a>
+                    <% } else { %>
+                        <a href="/login" class="nav-link text-dark">
+                            <i class="fa-solid fa-sign-in-alt fa-lg"></i>
+                        </a>
+                        <a href="/register" class="nav-link text-dark">
+                            <i class="fa-solid fa-user-plus fa-lg"></i>
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
     </div>
 </nav>
+
+<style>
+@media (max-width: 767.98px) {
+    body {
+        padding-bottom: 60px; /* Alt menü için boşluk */
+    }
+
+    .navbar {
+        padding: 0.5rem 0;
+    }
+
+    .navbar-brand {
+        margin: 0;
+    }
+
+    .fixed-bottom {
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-link i {
+        font-size: 1.5rem;
+    }
+}
+</style>
+
