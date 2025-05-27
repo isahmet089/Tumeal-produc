@@ -60,6 +60,11 @@
                                  alt="Profil" 
                                  style="width:24px;height:24px;border-radius:50%;object-fit:cover;">
                         </a>
+                        <form action="/logout" method="POST" style="display: inline;">
+                            <button type="submit" class="nav-link border-0 bg-transparent">
+                                <i class="fa-solid fa-sign-out-alt fa-lg"></i>
+                            </button>
+                        </form>
                     <% } else { %>
                         <a href="/login" class="nav-link text-dark">
                             <i class="fa-solid fa-sign-in-alt fa-lg"></i>
